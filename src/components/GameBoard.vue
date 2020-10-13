@@ -1,12 +1,21 @@
 <template>
   <div class="gameboard">
     <div>
-      <GameButton v-for="i in firstRow" :number="i" :key="i" />
+      <GameButton
+        @click="handleClick(i.number)"
+        v-for="i in firstRow"
+        :number="i"
+        :key="i.number"
+      />
     </div>
     <div>
-      <GameButton v-for="i in secondRow" :number="i" :key="i" />
+      <GameButton
+        @click="handleClick(i.number)"
+        v-for="i in secondRow"
+        :number="i"
+        :key="i.number"
+      />
     </div>
-
   </div>
 </template>
 
@@ -19,8 +28,49 @@ export default {
   },
   data() {
     return {
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    }
+      numbers: [
+        {
+          number: 1,
+          clicked: true,
+        },
+        {
+          number: 2,
+          clicked: true,
+        },
+        {
+          number: 3,
+          clicked: true,
+        },
+        {
+          number: 4,
+          clicked: true,
+        },
+        {
+          number: 5,
+          clicked: true,
+        },
+        {
+          number: 6,
+          clicked: true,
+        },
+        {
+          number: 7,
+          clicked: true,
+        },
+        {
+          number: 8,
+          clicked: true,
+        },
+        {
+          number: 9,
+          clicked: true,
+        },
+        {
+          number: 10,
+          clicked: false,
+        },
+      ],
+    };
   },
   computed: {
     firstRow() {
@@ -28,8 +78,27 @@ export default {
     },
     secondRow() {
       return this.numbers.slice(5);
-    }
-  }
+    },
+  },
+  methods: {
+    handleClick(number) {
+      const numberData = this.numbers.find((x) => x.number == number);
+
+      if (this.numbers.every(n => (n.number < number && n.clicked) || n.number >= number)) {
+        numberData.clicked = true;
+        if (this.numbers.every(n => n.clicked)) {
+          console.log('we won!');
+          
+          document.addEventListener('mousedown', () => {
+            this.numbers.forEach(n => n.clicked = false);
+          }, { once: true})
+        }
+      } else {
+        this.numbers.forEach(n => n.clicked = false);
+      }
+      
+    },
+  },
 };
 </script>
 

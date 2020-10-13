@@ -1,11 +1,24 @@
 <template>
-  <button>{{ number }}</button>
+  <button @mousedown="mouseDown" :class="{ clicked: number.clicked }">{{ number.number }}</button>
 </template>
 
 <script>
 export default {
-  props: ['number']
-}
+  props: ["number"],
+  methods: {
+    mouseDown() {
+      document.addEventListener(
+        "mouseup",
+        () => {
+          this.$emit("click");
+        },
+        {
+          once: true,
+        }
+      );
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -16,5 +29,11 @@ button {
   text-align: center;
   font-size: 5vw;
   font-weight: 100;
+
+  background-color: lightblue;
+  
+  &.clicked {
+    background-color: green;
+  }
 }
 </style>
