@@ -43,7 +43,7 @@ export default {
     return {
       blinkInterval: null,
       isBlinking: false,
-      gameStartMs: null,
+      hasWon: false,
       numbers: [
         {
           number: 1,
@@ -99,9 +99,27 @@ export default {
       return this.numbers.slice(5);
     },
   },
+  mounted() {
+    this.newGame();
+  },
   methods: {
+    newGame() {
+      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      for (let i = numbers.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+      }
+
+      this.numbers = numbers.map((i) => ({
+        number: i,
+        clicked: false,
+      }));
+
+      this.hasWon = false;
+      this.$emit("gameStart");
+    },
     handleClick(number) {
-      if (this.isAnimating) {
+      if (this.isAnimating || this.hasWon) {
         return;
       }
 
@@ -113,28 +131,23 @@ export default {
       );
 
       if (number == highestNumberSoFar + 1) {
+        if (number == 1) {
+          this.$emit("firstClick");
+        }
         numberData.clicked = true;
 
         // Win condition
-        if (this.numbers.every((n) => n.clicked)) {
-          console.log("we won!");
-
-          this.$emit("win");
-
-          document.addEventListener(
-            "mousedown",
-            () => {
-              this.numbers.forEach((n) => (n.clicked = false));
-            },
-            { once: true }
-          );
+        // if (this.numbers.every((n) => n.clicked)) {
+        if (this.numbers.filter((n) => n.clicked).length == 2) {
+          this.hasWon = true;
+          this.$emit("gameEnd");
         }
       } else {
         this.clearProgress();
       }
     },
     clearProgress() {
-      this.numbers.forEach(number => number.clicked = false);
+      this.numbers.forEach((number) => (number.clicked = false));
       this.animateError();
     },
     animateError() {
@@ -159,21 +172,6 @@ export default {
         }
       }, blinkTimeMs);
     },
-    newGame() {
-      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      for (let i = numbers.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-      }
-
-      this.numbers = numbers.map(i => ({
-        number: i,
-        clicked: false
-      }));
-
-      this.gameStartMs = new Date();
-    },
-    
   },
 };
 </script>
