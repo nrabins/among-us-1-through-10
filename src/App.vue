@@ -20,6 +20,8 @@ export default {
 html, body {
   height: 100vh;
   margin: 0;
+
+  background: linear-gradient(to top left, #373b44, #4286f4);
 }
 
 #app {

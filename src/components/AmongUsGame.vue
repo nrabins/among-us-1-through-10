@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     newGame() {
+      this.hasWon = false;
       this.$refs.gameBoard.newGame();
     },
     onGameStart() {
@@ -48,6 +49,7 @@ export default {
       const fromGameStartMs = now - this.gameStartMs;
       // const fromFirstClickMs = now - this.firstClickMs;
 
+      this.hasWon = true;
       this.$refs.sinceVisibleScoreboard.addScore(fromGameStartMs);
       // document.addEventListener("mousedown", this.newGame, { once: true });
     },
@@ -70,18 +72,33 @@ export default {
   }
 }
 
-.new-game {
-  padding: 1vw 2vw;
+$button-text-color: #98ff9e;
+$button-color: #00a141;
+$button-color-hover: lighten($button-color, 7%);
+$button-color-emphasis: #00a141;
+$button-color-emphasis-hover: blue;
+
+button.new-game {
+  padding: .8vw 1.2vw;
   border-radius: 0.5vw;
   border: 0.2vw solid black;
   text-transform: uppercase;
-  font-size: 1vw;
-  color: #98ff9e;
+  font-size: 1.5vw;
+  cursor: pointer;
+  
+  color: $button-text-color;
+  background-color: $button-color;
 
-  background-color: darken(#00a141, 10%);
+  &:hover {
+    background-color: $button-color-hover;
+  }
 
   &.has-won {
-    background-color: #00a141;
+    background-color: $button-color-emphasis;
+
+    &:hover {
+      background-color: $button-color-emphasis-hover
+    }
   }
 }
 </style>
