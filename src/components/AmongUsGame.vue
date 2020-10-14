@@ -1,22 +1,32 @@
 <template>
-  <div> 
-    <GameBoard /> 
-    <GameControls />
+  <div>
+    <GameBoard ref="gameBoard" />
+    <div class="controls">
+      <button @click="newGame">New Game</button>
+    </div>
   </div>
 </template>
 
 <script>
-import GameBoard from '@/components/GameBoard';
-import GameControls from '@/components/GameControls';
+import GameBoard from "@/components/GameBoard";
 
 export default {
   components: {
     GameBoard,
-    GameControls,
+  },
+  methods: {
+    newGame() {
+      this.$refs.gameBoard.newGame();
+    }
   }
-}
+};
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.controls {
+  padding: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
