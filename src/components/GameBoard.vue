@@ -137,8 +137,8 @@ export default {
         numberData.clicked = true;
 
         // Win condition
-        // if (this.numbers.every((n) => n.clicked)) {
-        if (this.numbers.filter((n) => n.clicked).length == 2) {
+        if (this.numbers.every((n) => n.clicked)) {
+        // if (this.numbers.filter((n) => n.clicked).length == 2) {
           this.hasWon = true;
           this.$emit("gameEnd");
         }
