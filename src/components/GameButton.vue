@@ -7,7 +7,11 @@
     <!-- <span>
       {{ number.number }}
     </span> -->
-    <img :src="`numbers/${number.number}.png`" :alt="number.number" @dragstart.prevent>
+    <img
+      :src="`numbers/${number.number}.png`"
+      :alt="number.number"
+      @dragstart.prevent
+    />
   </div>
 </template>
 
@@ -64,8 +68,7 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%);
 
-    opacity: 80%;
-    
+    opacity: 0.8;
   }
   // span {
   //   position: absolute;
