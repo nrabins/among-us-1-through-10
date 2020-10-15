@@ -1,11 +1,16 @@
 <template>
   <div class="container">
-    <GameBoard
-      ref="gameBoard"
-      @newGameRequest="newGame"
-      @firstClick="onFirstClick"
-      @gameEnd="onGameEnd"
-    />
+    <div class="game-board-and-source">
+      <GameBoard
+        ref="gameBoard"
+        @newGameRequest="newGame"
+        @firstClick="onFirstClick"
+        @gameEnd="onGameEnd"
+      />
+      <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
+
+    </div>
+    
     <div class="meta">
       <!-- <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
         New Game
@@ -47,7 +52,6 @@ export default {
       this.$refs.sinceFirstClickScoreboard.startTimer();
     },
     onGameEnd() {
-      console.log('game has ended');
       this.hasWon = true;
       this.$refs.sinceVisibleScoreboard.stopTimer();
       this.$refs.sinceFirstClickScoreboard.stopTimer();
@@ -63,13 +67,26 @@ export default {
   align-items: center;
 }
 
+.game-board-and-source {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  a {
+    font-size: .8vw;
+    color: white;
+
+    margin-top: 1.5vw;
+  }
+}
+
 .meta {
   margin: 1vh;
   display: flex;
   flex-direction: column;
 
   .scoreboards {
-    border-radius: 20px;
+    border-radius: 1vw;
     border: .2vw solid black;
     background-color: rgba(0, 0, 0, 0.308);
     color: rgba(255, 255, 255, 0.801);

@@ -1,8 +1,14 @@
 <template>
-  <div class="game-button noselect" @mousedown="mouseDown" :class="{ clicked: number.clicked, blinking: isBlinking }">
-    <span>
+  <div
+    class="game-button noselect"
+    @mousedown="mouseDown"
+    :class="{ clicked: number.clicked, blinking: isBlinking }"
+  >
+    <!-- <span>
       {{ number.number }}
-    </span></div>
+    </span> -->
+    <img :src="`numbers/${number.number}.png`" :alt="number.number" @dragstart.prevent>
+  </div>
 </template>
 
 <script>
@@ -30,10 +36,10 @@ export default {
   width: 7.7vw;
   height: 7.7vw;
 
-  margin: .15vw;
+  margin: 0.15vw;
 
-  border-radius: .4vw;
-  border: solid .25vw black;
+  border-radius: 0.4vw;
+  border: solid 0.25vw black;
 
   text-align: center;
   font-size: 5vw;
@@ -42,22 +48,30 @@ export default {
   background-color: #8fa1d1;
 
   position: relative;
-  
+
   &.clicked {
     background-color: #00a141;
   }
 
   &.blinking {
-    background-color: #901241
+    background-color: #901241;
   }
 
-  span {
+  img {
+    height: 50%;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+
+    opacity: 80%;
+    
   }
+  // span {
+  //   position: absolute;
+  //   left: 50%;
+  //   top: 50%;
+  //   transform: translate(-50%, -50%);
+  // }
 }
-
-
 </style>

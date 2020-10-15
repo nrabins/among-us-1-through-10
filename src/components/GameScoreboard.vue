@@ -66,7 +66,6 @@ export default {
       this.startTimeMs = null;
     },
     addScore(score) {
-      console.log(`got a new score ${score}`);
       this.scores.push(score);
       this.scores.sort((a, b) => {
         if (a == null) {
@@ -109,6 +108,7 @@ export default {
     .best-times-title {
       font-size: 1vw;
       text-transform: uppercase;
+      margin-bottom: 1vw;
     }
 
     .last-score {
