@@ -2,24 +2,28 @@
   <div class="container">
     <GameBoard
       ref="gameBoard"
-      @gameStart="onGameStart"
+      @newGameRequest="newGame"
       @firstClick="onFirstClick"
       @gameEnd="onGameEnd"
     />
     <div class="meta">
-      <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
+      <!-- <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
         New Game
-      </button>
+      </button> -->
       <div class="scoreboards">
-        <GameScoreboard ref="sinceVisibleScoreboard" title="Since Visible" />
+        <GameScoreboard ref="sinceVisibleScoreboard" title="Total" />
+        <GameScoreboard
+          ref="sinceFirstClickScoreboard"
+          title="First Click"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import GameBoard from "@/components/GameBoard";
-import GameScoreboard from "@/components/GameScoreboard";
+import GameBoard from '@/components/GameBoard';
+import GameScoreboard from '@/components/GameScoreboard';
 
 export default {
   components: {
@@ -29,37 +33,34 @@ export default {
   data() {
     return {
       hasWon: false,
-      gameStartMs: null,
-      firstClickMs: null,
     };
   },
   methods: {
     newGame() {
       this.hasWon = false;
       this.$refs.gameBoard.newGame();
-    },
-    onGameStart() {
-      this.gameStartMs = Date.now();
+      this.$refs.sinceVisibleScoreboard.startTimer();
+      this.$refs.sinceFirstClickScoreboard.clearTimer();
     },
     onFirstClick() {
-      this.firstClickMs = Date.now();
+      // this.firstClickMs = Date.now();
+      this.$refs.sinceFirstClickScoreboard.startTimer();
     },
     onGameEnd() {
-      const now = Date.now();
-      const fromGameStartMs = now - this.gameStartMs;
-      // const fromFirstClickMs = now - this.firstClickMs;
-
+      console.log('game has ended');
       this.hasWon = true;
-      this.$refs.sinceVisibleScoreboard.addScore(fromGameStartMs);
+      this.$refs.sinceVisibleScoreboard.stopTimer();
+      this.$refs.sinceFirstClickScoreboard.stopTimer();
       // document.addEventListener("mousedown", this.newGame, { once: true });
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .container {
   display: flex;
+  align-items: center;
 }
 
 .meta {
@@ -68,7 +69,20 @@ export default {
   flex-direction: column;
 
   .scoreboards {
-    flex-grow: 1;
+    border-radius: 20px;
+    border: .2vw solid black;
+    background-color: rgba(0, 0, 0, 0.308);
+    color: rgba(255, 255, 255, 0.801);
+
+    > *:first-child {
+      border-right: .1vw solid black;
+    }
+
+    margin: 1vw;
+
+    > * {
+      display: inline-block;
+    }
   }
 }
 
@@ -79,13 +93,13 @@ $button-color-emphasis: #00a141;
 $button-color-emphasis-hover: blue;
 
 button.new-game {
-  padding: .8vw 1.2vw;
+  padding: 0.8vw 1.2vw;
   border-radius: 0.5vw;
   border: 0.2vw solid black;
   text-transform: uppercase;
   font-size: 1.5vw;
   cursor: pointer;
-  
+
   color: $button-text-color;
   background-color: $button-color;
 
@@ -97,8 +111,18 @@ button.new-game {
     background-color: $button-color-emphasis;
 
     &:hover {
-      background-color: $button-color-emphasis-hover
+      background-color: $button-color-emphasis-hover;
     }
   }
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

@@ -4,6 +4,13 @@
       <div class="border-3">
         <div class="border-2">
           <div class="border-1">
+            <div
+              class="new-game-overlay noselect"
+              v-show="hasWon"
+              @click="requestNewGame"
+            >
+              CLICK TO START
+            </div>
             <div class="reflections" />
             <div class="gameboard">
               <div class="offset-bottom-margin">
@@ -33,7 +40,7 @@
 </template>
 
 <script>
-import GameButton from "@/components/GameButton";
+import GameButton from '@/components/GameButton';
 
 export default {
   components: {
@@ -43,7 +50,7 @@ export default {
     return {
       blinkInterval: null,
       isBlinking: false,
-      hasWon: false,
+      hasWon: true,
       numbers: [
         {
           number: 1,
@@ -99,10 +106,10 @@ export default {
       return this.numbers.slice(5);
     },
   },
-  mounted() {
-    this.newGame();
-  },
   methods: {
+    requestNewGame() {
+      this.$emit('newGameRequest');
+    },
     newGame() {
       const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       for (let i = numbers.length - 1; i > 0; i--) {
@@ -116,7 +123,6 @@ export default {
       }));
 
       this.hasWon = false;
-      this.$emit("gameStart");
     },
     handleClick(number) {
       if (this.isAnimating || this.hasWon) {
@@ -132,15 +138,15 @@ export default {
 
       if (number == highestNumberSoFar + 1) {
         if (number == 1) {
-          this.$emit("firstClick");
+          this.$emit('firstClick');
         }
         numberData.clicked = true;
 
         // Win condition
         if (this.numbers.every((n) => n.clicked)) {
-        // if (this.numbers.filter((n) => n.clicked).length == 2) {
+          // if (this.numbers.filter((n) => n.clicked).length == 2) {
           this.hasWon = true;
-          this.$emit("gameEnd");
+          this.$emit('gameEnd');
         }
       } else {
         this.clearProgress();
@@ -189,6 +195,23 @@ export default {
   margin-bottom: -0.2vh;
 }
 
+.new-game-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 3;
+
+  font-size: 3vw;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Border styling */
 .border- {
   &1 {
@@ -218,6 +241,8 @@ export default {
   &5 {
     background-color: #010002;
     padding: 0.4vw;
+
+    position: relative;
   }
 }
 
