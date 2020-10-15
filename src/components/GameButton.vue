@@ -4,11 +4,8 @@
     @mousedown="mouseDown"
     :class="{ clicked: number.clicked, blinking: isBlinking }"
   >
-    <!-- <span>
-      {{ number.number }}
-    </span> -->
     <img
-      :src="`numbers/${number.number}.png`"
+      :src="imageSource"
       :alt="number.number"
       @dragstart.prevent
     />
@@ -18,6 +15,11 @@
 <script>
 export default {
   props: ["number", "isBlinking"],
+  computed: {
+    imageSource() {
+      return require(`./../assets/numbers/${this.number.number}.png`);
+    }
+  },
   methods: {
     mouseDown() {
       document.addEventListener(
@@ -70,11 +72,5 @@ export default {
 
     opacity: 0.8;
   }
-  // span {
-  //   position: absolute;
-  //   left: 50%;
-  //   top: 50%;
-  //   transform: translate(-50%, -50%);
-  // }
 }
 </style>

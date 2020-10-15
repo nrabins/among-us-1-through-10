@@ -1,4 +1,4 @@
-export function formatMs(valueMs) {
+export function formatMs(valueMs: number): string {
   if (valueMs === null) {
     return "---";
   }

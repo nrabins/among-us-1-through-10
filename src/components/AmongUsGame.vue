@@ -8,19 +8,15 @@
         @gameEnd="onGameEnd"
       />
       <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
-
     </div>
-    
+
     <div class="meta">
       <!-- <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
         New Game
       </button> -->
       <div class="scoreboards">
         <GameScoreboard ref="sinceVisibleScoreboard" title="Total" />
-        <GameScoreboard
-          ref="sinceFirstClickScoreboard"
-          title="First Click"
-        />
+        <GameScoreboard ref="sinceFirstClickScoreboard" title="First Click" />
       </div>
     </div>
   </div>
@@ -48,14 +44,12 @@ export default {
       this.$refs.sinceFirstClickScoreboard.clearTimer();
     },
     onFirstClick() {
-      // this.firstClickMs = Date.now();
       this.$refs.sinceFirstClickScoreboard.startTimer();
     },
     onGameEnd() {
       this.hasWon = true;
       this.$refs.sinceVisibleScoreboard.stopTimer();
       this.$refs.sinceFirstClickScoreboard.stopTimer();
-      // document.addEventListener("mousedown", this.newGame, { once: true });
     },
   },
 };
@@ -73,7 +67,7 @@ export default {
   align-items: center;
 
   a {
-    font-size: .8vw;
+    font-size: 0.8vw;
     color: white;
 
     margin-top: 1.5vw;
@@ -87,12 +81,12 @@ export default {
 
   .scoreboards {
     border-radius: 1vw;
-    border: .2vw solid black;
+    border: 0.2vw solid black;
     background-color: rgba(0, 0, 0, 0.308);
     color: rgba(255, 255, 255, 0.801);
 
     > *:first-child {
-      border-right: .1vw solid black;
+      border-right: 0.1vw solid black;
     }
 
     margin: 1vw;
@@ -135,11 +129,11 @@ button.new-game {
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 </style>
