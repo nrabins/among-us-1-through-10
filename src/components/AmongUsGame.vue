@@ -22,37 +22,42 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue, Ref } from 'vue-property-decorator';
+
 import GameBoard from '@/components/GameBoard';
 import GameScoreboard from '@/components/GameScoreboard';
 
-export default {
+@Component({
   components: {
     GameBoard,
     GameScoreboard,
   },
-  data() {
-    return {
-      hasWon: false,
-    };
-  },
-  methods: {
-    newGame() {
-      this.hasWon = false;
-      this.$refs.gameBoard.newGame();
-      this.$refs.sinceVisibleScoreboard.startTimer();
-      this.$refs.sinceFirstClickScoreboard.clearTimer();
-    },
-    onFirstClick() {
-      this.$refs.sinceFirstClickScoreboard.startTimer();
-    },
-    onGameEnd() {
-      this.hasWon = true;
-      this.$refs.sinceVisibleScoreboard.stopTimer();
-      this.$refs.sinceFirstClickScoreboard.stopTimer();
-    },
-  },
-};
+})
+export default class AmongUsGame extends Vue {
+  private hasWon = false;
+
+  @Ref() readonly gameBoard: GameBoard;
+  @Ref() readonly sinceVisibleScoreboard: GameScoreboard;
+  @Ref() readonly sinceFirstClickScoreboard: GameScoreboard;
+
+  newGame() {
+    this.hasWon = false;
+    this.gameBoard.newGame();
+    this.sinceVisibleScoreboard.startTimer();
+    this.sinceFirstClickScoreboard.clearTimer();
+  }
+
+  onFirstClick() {
+    this.sinceFirstClickScoreboard.startTimer();
+  }
+
+  onGameEnd() {
+    this.hasWon = true;
+    this.sinceVisibleScoreboard.stopTimer();
+    this.sinceFirstClickScoreboard.stopTimer();
+  }
+}
 </script>
 
 <style lang="scss">

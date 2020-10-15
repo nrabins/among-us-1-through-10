@@ -39,147 +39,153 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 import GameButton from '@/components/GameButton';
 
-export default {
+@Component({
   components: {
     GameButton,
   },
-  data() {
-    return {
-      blinkInterval: null,
-      isBlinking: false,
-      hasWon: true,
-      numbers: [
-        {
-          number: 1,
-          clicked: false,
-        },
-        {
-          number: 2,
-          clicked: false,
-        },
-        {
-          number: 3,
-          clicked: false,
-        },
-        {
-          number: 4,
-          clicked: false,
-        },
-        {
-          number: 5,
-          clicked: false,
-        },
-        {
-          number: 6,
-          clicked: false,
-        },
-        {
-          number: 7,
-          clicked: false,
-        },
-        {
-          number: 8,
-          clicked: false,
-        },
-        {
-          number: 9,
-          clicked: false,
-        },
-        {
-          number: 10,
-          clicked: false,
-        },
-      ],
-    };
-  },
-  computed: {
-    isAnimating() {
-      return this.blinkInterval !== null;
+})
+export default class extends Vue {
+  blinkInterval: number | null = null;
+  isBlinking = false;
+  hasWon = true;
+  numbers = [
+    {
+      number: 1,
+      clicked: false,
     },
-    firstRow() {
-      return this.numbers.slice(0, 5);
+    {
+      number: 2,
+      clicked: false,
     },
-    secondRow() {
-      return this.numbers.slice(5);
+    {
+      number: 3,
+      clicked: false,
     },
-  },
-  methods: {
-    requestNewGame() {
-      this.$emit('newGameRequest');
+    {
+      number: 4,
+      clicked: false,
     },
-    newGame() {
-      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      for (let i = numbers.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    {
+      number: 5,
+      clicked: false,
+    },
+    {
+      number: 6,
+      clicked: false,
+    },
+    {
+      number: 7,
+      clicked: false,
+    },
+    {
+      number: 8,
+      clicked: false,
+    },
+    {
+      number: 9,
+      clicked: false,
+    },
+    {
+      number: 10,
+      clicked: false,
+    },
+  ];
+
+  get isAnimating() {
+    return this.blinkInterval !== null;
+  }
+
+  get firstRow() {
+    return this.numbers.slice(0, 5);
+  }
+
+  get secondRow() {
+    return this.numbers.slice(5);
+  }
+
+  requestNewGame(): void {
+    this.$emit('newGameRequest');
+  }
+
+  newGame(): void {
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    for (let i = numbers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    }
+
+    this.numbers = numbers.map((i) => ({
+      number: i,
+      clicked: false,
+    }));
+
+    this.hasWon = false;
+  }
+
+  handleClick(number: number): void {
+    if (this.isAnimating || this.hasWon) {
+      return;
+    }
+
+    const numberData = this.numbers.find((x) => x.number == number);
+
+    if (!numberData) {
+      return;
+    }
+
+    const highestNumberSoFar = Math.max(
+      0,
+      ...this.numbers.filter((n) => n.clicked).map((n) => n.number)
+    );
+
+    if (number == highestNumberSoFar + 1) {
+      if (number == 1) {
+        this.$emit('firstClick');
+      }
+      numberData.clicked = true;
+
+      // Win condition
+      if (this.numbers.every((n) => n.clicked)) {
+        // if (this.numbers.filter((n) => n.clicked).length == 2) {
+        this.hasWon = true;
+        this.$emit('gameEnd');
+      }
+    } else {
+      this.clearProgress();
+    }
+  }
+
+  clearProgress(): void {
+    this.numbers.forEach((number) => (number.clicked = false));
+    this.animateError();
+  }
+
+  animateError(): void {
+    if (this.blinkInterval) {
+      return;
+    }
+
+    const blinkTimeMs = 250;
+    let blinksLeft = 2;
+    this.isBlinking = true;
+
+    this.blinkInterval = setInterval(() => {
+      this.isBlinking = !this.isBlinking;
+      if (!this.isBlinking) {
+        blinksLeft--;
       }
 
-      this.numbers = numbers.map((i) => ({
-        number: i,
-        clicked: false,
-      }));
-
-      this.hasWon = false;
-    },
-    handleClick(number) {
-      if (this.isAnimating || this.hasWon) {
-        return;
+      if (blinksLeft == 0 && this.blinkInterval != null) {
+        clearInterval(this.blinkInterval);
+        this.blinkInterval = null;
       }
-
-      const numberData = this.numbers.find((x) => x.number == number);
-
-      const highestNumberSoFar = Math.max(
-        0,
-        ...this.numbers.filter((n) => n.clicked).map((n) => n.number)
-      );
-
-      if (number == highestNumberSoFar + 1) {
-        if (number == 1) {
-          this.$emit('firstClick');
-        }
-        numberData.clicked = true;
-
-        // Win condition
-        if (this.numbers.every((n) => n.clicked)) {
-          // if (this.numbers.filter((n) => n.clicked).length == 2) {
-          this.hasWon = true;
-          this.$emit('gameEnd');
-        }
-      } else {
-        this.clearProgress();
-      }
-    },
-    clearProgress() {
-      this.numbers.forEach((number) => (number.clicked = false));
-      this.animateError();
-    },
-    animateError() {
-      if (this.blinkInterval) {
-        return;
-      }
-      this.animating = true;
-
-      const blinkTimeMs = 250;
-      let blinksLeft = 2;
-      this.isBlinking = true;
-
-      this.blinkInterval = setInterval(() => {
-        this.isBlinking = !this.isBlinking;
-        if (!this.isBlinking) {
-          blinksLeft--;
-        }
-
-        if (blinksLeft == 0) {
-          clearInterval(this.blinkInterval);
-          this.blinkInterval = null;
-        }
-      }, blinkTimeMs);
-    },
-  },
-};
+    }, blinkTimeMs);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

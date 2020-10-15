@@ -4,15 +4,18 @@
   </div>
 </template>
 
-<script>
-import AmongUsGame from '@/components/AmongUsGame';
+<script lang="ts">
+  import { Component, Vue } from 'vue-property-decorator';
+  import AmongUsGame from '@/components/AmongUsGame.vue';
 
-export default {
-  name: 'App',
-  components: {
-    AmongUsGame
+  @Component({
+    components: {
+      AmongUsGame
+    }
+  })
+  export default class  extends Vue {
+
   }
-}
 </script>
 
 <style lang="scss">
@@ -30,8 +33,6 @@ html, body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-
 
   display: flex;
   justify-content: center;
