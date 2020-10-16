@@ -1,5 +1,9 @@
 <template>
   <div class="container">
+    <div class="test">
+      {{ gameState.counter }}
+    </div>
+    <button @click="increment">+</button>
     <div class="game-board-and-source">
       <GameBoard
         ref="gameBoard"
@@ -11,9 +15,6 @@
     </div>
 
     <div class="meta">
-      <!-- <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
-        New Game
-      </button> -->
       <div class="scoreboards">
         <GameScoreboard ref="sinceVisibleScoreboard" title="Overall" />
         <GameScoreboard ref="sinceFirstClickScoreboard" title="1-10" />
@@ -23,10 +24,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Ref } from 'vue-property-decorator';
+import { Component, Vue, Ref } from "vue-property-decorator";
 
-import GameBoard from '@/components/GameBoard.vue';
-import GameScoreboard from '@/components/GameScoreboard.vue';
+import { GameModule } from '@/store/modules/game/index';
+
+import GameBoard from "@/components/GameBoard.vue";
+import GameScoreboard from "@/components/GameScoreboard.vue";
 
 @Component({
   components: {
@@ -35,11 +38,18 @@ import GameScoreboard from '@/components/GameScoreboard.vue';
   },
 })
 export default class AmongUsGame extends Vue {
-  private hasWon = false;
-
+  hasWon = false;
   @Ref() readonly gameBoard!: GameBoard;
   @Ref() readonly sinceVisibleScoreboard!: GameScoreboard;
-  @Ref() readonly sinceFirstClickScoreboard!:  GameScoreboard;
+  @Ref() readonly sinceFirstClickScoreboard!: GameScoreboard;
+
+  get gameState() {
+    return GameModule;
+  }
+
+  increment() {
+    GameModule.INCREMENT();
+  }
 
   newGame() {
     this.hasWon = false;
