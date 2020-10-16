@@ -3,12 +3,11 @@
     <div class="border-4">
       <div class="border-3">
         <div class="border-2">
-            <button @click="toggle">Toggle State</button>
           <div class="border-1">
             <div
               class="new-game-overlay noselect"
-              v-show="hasWon"
-              @click="requestNewGame"
+              v-show="showNewGameOverlay"
+              @click="newGame"
             >
               CLICK TO START
             </div>
@@ -54,7 +53,6 @@ import { Phase } from '@/store/modules/game/types';
 })
 export default class GameBoard extends Vue {
 
-
   blinkInterval: number | null = null;
   isBlinking = false;
 
@@ -70,7 +68,11 @@ export default class GameBoard extends Vue {
     return GameModule.numbers.slice(5);
   }
 
-  requestNewGame(): void {
+  get showNewGameOverlay() {
+    return GameModule.phase == Phase.Inactive;
+  }
+
+  newGame(): void {
     GameModule.NEW_GAME();
   }
 
@@ -79,12 +81,12 @@ export default class GameBoard extends Vue {
       return;
     }
 
-    GameModule.CLICK_NUMBER(number);
-  }
-
-  clearProgress(): void {
-    this.numbers.forEach((number) => (number.clicked = false));
-    this.animateError();
+    if (number != GameModule.nextNumber) {
+      GameModule.RESET_PROGRESS();
+      this.animateError();
+    } else {
+      GameModule.CLICK_NUMBER(number);
+    }
   }
 
   animateError(): void {

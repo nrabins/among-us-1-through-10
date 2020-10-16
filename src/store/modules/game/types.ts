@@ -2,9 +2,9 @@ export interface GameState {
   phase: Phase;
   numbers: GameNumber[];
   timers: {
-    oneThroughTenMs: number | null,
-    overallMs?: number | null
-  }
+    oneThroughTenMs?: number;
+    overallMs?: number;
+  };
 }
 
 export enum Phase {

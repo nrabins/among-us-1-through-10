@@ -1,19 +1,14 @@
 <template>
   <div class="container">
     <div class="game-board-and-source">
-      <GameBoard
-        ref="gameBoard"
-        @newGameRequest="newGame"
-        @firstClick="onFirstClick"
-        @gameEnd="onGameEnd"
-      />
+      <GameBoard />
       <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
     </div>
 
     <div class="meta">
       <div class="scoreboards">
-        <GameScoreboard ref="sinceVisibleScoreboard" title="Overall" />
-        <GameScoreboard ref="sinceFirstClickScoreboard" title="1-10" />
+        <GameScoreboard title="Overall" />
+        <GameScoreboard title="1-10" />
       </div>
     </div>
   </div>

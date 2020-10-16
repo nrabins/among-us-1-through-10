@@ -2,7 +2,7 @@ import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators'
 import store from '@/store'
 import { GameState, Phase, GameNumber } from './types';
 
-@Module({ dynamic: true, store, name: 'game'})
+@Module({ dynamic: true, store, name: 'game' })
 export default class Game extends VuexModule implements GameState {
   phase = Phase.Inactive;
   numbers = [] as GameNumber[];
@@ -16,8 +16,17 @@ export default class Game extends VuexModule implements GameState {
       })
     }
   }
-  timers: { oneThroughTenMs: number | null; overallMs?: number | null | undefined; };
-  
+
+  timers: { oneThroughTenMs?: number | undefined; overallMs?: number | undefined } = {};
+
+  get nextNumber(): number {
+    const highestNumberSoFar = Math.max(0,
+      ...(this.numbers
+        .filter((n) => n.clicked)
+        .map(n => n.number)))
+    return highestNumberSoFar + 1;
+  }
+
   @Mutation
   NEW_GAME() {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -30,6 +39,8 @@ export default class Game extends VuexModule implements GameState {
       number: i,
       clicked: false,
     }));
+
+    this.phase = Phase.Active;
   }
 
   @Mutation
@@ -40,28 +51,37 @@ export default class Game extends VuexModule implements GameState {
       return;
     }
 
-    const highestNumberSoFar = Math.max(
-      0,
-      ...this.numbers.filter((n) => n.clicked).map((n) => n.number)
-    );
+    // Unfortunately we have to duplicate this logic since it's not possible to call getters from mutations
+    const nextNumber = Math.max(0,
+      ...(this.numbers
+        .filter((n) => n.clicked)
+        .map(n => n.number))) + 1
 
-    if (number == highestNumberSoFar + 1) {
+    if (number == nextNumber) {
       if (number == 1) {
-        this.$emit('firstClick');
         this.timers.oneThroughTenMs = Date.now();
       }
       gameNumber.clicked = true;
 
       // Win condition
       if (this.numbers.every((n) => n.clicked)) {
-        this.hasWon = true;
-        this.$emit('gameEnd');
+        // TODO do stuff
+        this.phase = Phase.Inactive;
       }
+      return true;
     } else {
-      this.clearProgress();
+      return;
     }
   }
-  
+
+  @Mutation
+  RESET_PROGRESS() {
+    this.numbers = this.numbers.map(number => ({
+      ...number,
+      clicked: false
+    }))
+  }
+
 }
 
 export const GameModule = getModule(Game);
