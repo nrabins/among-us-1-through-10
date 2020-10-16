@@ -15,8 +15,8 @@
         New Game
       </button> -->
       <div class="scoreboards">
-        <GameScoreboard ref="sinceVisibleScoreboard" title="Total" />
-        <GameScoreboard ref="sinceFirstClickScoreboard" title="First Click" />
+        <GameScoreboard ref="sinceVisibleScoreboard" title="Overall" />
+        <GameScoreboard ref="sinceFirstClickScoreboard" title="1-10" />
       </div>
     </div>
   </div>
@@ -25,8 +25,8 @@
 <script lang="ts">
 import { Component, Vue, Ref } from 'vue-property-decorator';
 
-import GameBoard from '@/components/GameBoard';
-import GameScoreboard from '@/components/GameScoreboard';
+import GameBoard from '@/components/GameBoard.vue';
+import GameScoreboard from '@/components/GameScoreboard.vue';
 
 @Component({
   components: {
@@ -37,9 +37,9 @@ import GameScoreboard from '@/components/GameScoreboard';
 export default class AmongUsGame extends Vue {
   private hasWon = false;
 
-  @Ref() readonly gameBoard: GameBoard;
-  @Ref() readonly sinceVisibleScoreboard: GameScoreboard;
-  @Ref() readonly sinceFirstClickScoreboard: GameScoreboard;
+  @Ref() readonly gameBoard!: GameBoard;
+  @Ref() readonly sinceVisibleScoreboard!: GameScoreboard;
+  @Ref() readonly sinceFirstClickScoreboard!:  GameScoreboard;
 
   newGame() {
     this.hasWon = false;

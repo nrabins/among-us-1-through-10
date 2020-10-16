@@ -4,36 +4,35 @@
     @mousedown="mouseDown"
     :class="{ clicked: number.clicked, blinking: isBlinking }"
   >
-    <img
-      :src="imageSource"
-      :alt="number.number"
-      @dragstart.prevent
-    />
+    <img :src="imageSource" :alt="number.number" @dragstart.prevent />
   </div>
 </template>
 
-<script>
-export default {
-  props: ["number", "isBlinking"],
-  computed: {
-    imageSource() {
-      return require(`./../assets/numbers/${this.number.number}.png`);
-    }
-  },
-  methods: {
-    mouseDown() {
-      document.addEventListener(
-        "mouseup",
-        () => {
-          this.$emit("click");
-        },
-        {
-          once: true,
-        }
-      );
-    },
-  },
-};
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+
+@Component
+export default class GameButton extends Vue {
+  @Prop({ required: true })
+  number!: { number: number; clicked: boolean };
+
+  @Prop()
+  public isBlinking!: boolean;
+
+  get imageSource() {
+    return require(`./../assets/numbers/${this.number.number}.png`);
+  }
+
+  mouseDown() {
+    document.addEventListener(
+      "mouseup",
+      () => {
+        this.$emit("click");
+      },
+      { once: true }
+    );
+  }
+}
 </script>
 
 <style lang="scss" scoped>

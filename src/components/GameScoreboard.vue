@@ -26,60 +26,75 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: ['title'],
-  data() {
-    return {
-      scores: [null, null, null, null, null],
-      lastTimeMs: null,
-      startTimeMs: null,
-      now: null,
-    };
-  },
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+
+@Component
+export default class GameScoreboard extends Vue {
+  @Prop({ required: true }) 
+  public title!: string;
+  
+  scores: Array<number | null> = [null, null, null, null, null];
+  lastTimeMs: number | null = null;
+  startTimeMs: number | null = null;
+  now: number | null = null;
+
+  get timerRunning() {
+    return this.startTimeMs != null;
+  }
+
+  get elapsedTimeMs() {
+    if (this.now && this.startTimeMs) {
+      return this.now - this.startTimeMs;
+    } else {
+      return null;
+    }
+  }
+
   mounted() {
     this.updateNow();
     setInterval(this.updateNow.bind(this), 11);
-  },
-  computed: {
-    timerRunning() {
-      return this.startTimeMs != null;
-    },
-    elapsedTimeMs() {
-      return this.now - this.startTimeMs;
-    },
-  },
-  methods: {
-    updateNow() {
-      this.now = Date.now();
-    },
-    clearTimer() {
-      this.lastTimeMs = null;
-    },
-    startTimer() {
-      this.lastTimeMs = null;
-      this.startTimeMs = Date.now();
-    },
-    stopTimer() {
+  }
+  updateNow() {
+    this.now = Date.now();
+  }
+
+  clearTimer() {
+    this.lastTimeMs = null;
+  }
+
+  startTimer() {
+    this.lastTimeMs = null;
+    this.startTimeMs = Date.now();
+  }
+
+  stopTimer() {
+    if (this.elapsedTimeMs) {
       this.lastTimeMs = this.elapsedTimeMs;
       this.addScore(this.elapsedTimeMs);
-      this.startTimeMs = null;
-    },
-    addScore(score) {
-      this.scores.push(score);
-      this.scores.sort((a, b) => {
-        if (a == null) {
-          return 1;
-        } else if (b == null) {
-          return -1;
-        } else {
-          return a - b;
-        }
-      });
-      this.scores = this.scores.slice(0, 5);
-    },
-  },
-};
+    }
+    this.startTimeMs = null;
+  }
+
+  addScore(score: number) {
+    this.scores.push(score);
+    this.scores.sort((a, b) => {
+      if (a == null) {
+        return 1;
+      } else if (b == null) {
+        return -1;
+      } else {
+        return a - b;
+      }
+    });
+    this.scores = this.scores.slice(0, 5);
+  }
+  /*
+    
+export default {
+  props: ['title'],
+};*/
+}
 </script>
 
 <style lang="scss" scoped>

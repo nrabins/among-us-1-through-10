@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import GameButton from '@/components/GameButton';
+import GameButton from '@/components/GameButton.vue';
 
 @Component({
   components: {
@@ -150,7 +150,6 @@ export default class extends Vue {
 
       // Win condition
       if (this.numbers.every((n) => n.clicked)) {
-        // if (this.numbers.filter((n) => n.clicked).length == 2) {
         this.hasWon = true;
         this.$emit('gameEnd');
       }
