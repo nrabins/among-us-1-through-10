@@ -7,6 +7,7 @@
 <script lang="ts">
   import { Component, Vue } from 'vue-property-decorator';
   import AmongUsGame from '@/components/AmongUsGame.vue';
+  import { GameModule } from '@/store/modules/game';
 
   @Component({
     components: {
@@ -14,7 +15,14 @@
     }
   })
   export default class  extends Vue {
+    private readonly nowIntervalMs = 11;
+    private nowIntervalHandle!: number;
 
+    mounted() {
+      this.nowIntervalHandle = setInterval(() => {
+        GameModule.UPDATE_NOW();
+      }, this.nowIntervalMs)
+    }
   }
 </script>
 

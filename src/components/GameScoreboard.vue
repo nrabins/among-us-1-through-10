@@ -7,7 +7,7 @@
       <div v-if="timerRunning">
         {{ elapsedTimeMs | formatMs }} <span class="seconds">s</span>
       </div>
-      <div v-else-if="lastTimeMs != null">
+      <div v-else-if="lastTimeMs !== null">
         {{ lastTimeMs | formatMs }} <span class="seconds">s</span>
       </div>
       <div v-else>---</div>
@@ -29,71 +29,48 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
+import { TimerType } from "@/store/modules/game/types";
+import { GameModule } from '@/store/modules/game';
+
 @Component
 export default class GameScoreboard extends Vue {
-  @Prop({ required: true }) 
-  public title!: string;
-  
-  scores: Array<number | null> = [null, null, null, null, null];
-  lastTimeMs: number | null = null;
-  startTimeMs: number | null = null;
-  now: number | null = null;
+  @Prop({ required: true })
+  public timerType!: TimerType;
 
-  get timerRunning() {
-    return this.startTimeMs != null;
+  get timerData() {
+    return GameModule.timerDataForTimerType(this.timerType)
   }
 
-  get elapsedTimeMs() {
-    if (this.now && this.startTimeMs) {
-      return this.now - this.startTimeMs;
+  get elapsedTimeMs(): number | null {
+    if (this.timerData.startTimeMs && GameModule.now) {
+      return GameModule.now - this.timerData.startTimeMs;
     } else {
       return null;
     }
   }
 
-  mounted() {
-    this.updateNow();
-    setInterval(this.updateNow.bind(this), 11);
-  }
-  updateNow() {
-    this.now = Date.now();
+  get lastTimeMs(): number | null {
+    return this.timerData.lastTimeMs;
   }
 
-  clearTimer() {
-    this.lastTimeMs = null;
+  get scores() {
+    return this.timerData.times;
   }
 
-  startTimer() {
-    this.lastTimeMs = null;
-    this.startTimeMs = Date.now();
-  }
-
-  stopTimer() {
-    if (this.elapsedTimeMs) {
-      this.lastTimeMs = this.elapsedTimeMs;
-      this.addScore(this.elapsedTimeMs);
+  get title() {
+    switch (this.timerType) {
+      case TimerType.Overall:
+        return "Overall";
+      case TimerType.OneThroughTen:
+        return "1-10";
+      default:
+        throw `Unrecognized TimerType in GameScoreboard.title(): ${this.timerType}`;
     }
-    this.startTimeMs = null;
   }
 
-  addScore(score: number) {
-    this.scores.push(score);
-    this.scores.sort((a, b) => {
-      if (a == null) {
-        return 1;
-      } else if (b == null) {
-        return -1;
-      } else {
-        return a - b;
-      }
-    });
-    this.scores = this.scores.slice(0, 5);
+  get timerRunning(): boolean {
+    return this.timerData.startTimeMs !== null;
   }
-  /*
-    
-export default {
-  props: ['title'],
-};*/
 }
 </script>
 

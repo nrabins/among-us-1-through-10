@@ -7,8 +7,8 @@
 
     <div class="meta">
       <div class="scoreboards">
-        <GameScoreboard title="Overall" />
-        <GameScoreboard title="1-10" />
+        <GameScoreboard title="Overall" :timerType="1" />
+        <GameScoreboard title="1-10" :timerType="2" />
       </div>
     </div>
   </div>

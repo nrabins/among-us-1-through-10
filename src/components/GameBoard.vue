@@ -40,11 +40,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import GameButton from '@/components/GameButton.vue';
+import { Component, Vue } from "vue-property-decorator";
+import GameButton from "@/components/GameButton.vue";
 
-import { GameModule } from '@/store/modules/game';
-import { Phase } from '@/store/modules/game/types';
+import { GameModule } from "@/store/modules/game";
+import { Phase } from "@/store/modules/game/types";
 
 @Component({
   components: {
@@ -52,7 +52,6 @@ import { Phase } from '@/store/modules/game/types';
   },
 })
 export default class GameBoard extends Vue {
-
   blinkInterval: number | null = null;
   isBlinking = false;
 
