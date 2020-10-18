@@ -9,7 +9,7 @@ export default class Game extends VuexModule implements GameState {
   timerDataOverall = new TimerDataImp(TimerType.Overall)
   timerDataOneThroughTen = new TimerDataImp(TimerType.OneThroughTen);
 
-  public now = Date.now();
+  // public now = Date.now();
 
   constructor(module: Game) {
     super(module);
@@ -21,10 +21,10 @@ export default class Game extends VuexModule implements GameState {
     }
   }
 
-  @Mutation
-  UPDATE_NOW() {
-    this.now = Date.now();
-  }
+  // @Mutation
+  // UPDATE_NOW() {
+  //   this.now = Date.now();
+  // }
 
   @Mutation
   NEW_GAME() {
@@ -71,7 +71,7 @@ export default class Game extends VuexModule implements GameState {
       gameNumber.clicked = true;
 
       if (this.numbers.every((n) => n.clicked)) {
-        // Game over handling
+        // Game-over handling
         this.phase = Phase.Inactive;
 
         this.timerDataOverall.recordTime(now);

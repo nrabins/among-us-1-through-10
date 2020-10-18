@@ -7,8 +7,8 @@
 
     <div class="meta">
       <div class="scoreboards">
-        <GameScoreboard title="Overall" :timerType="1" />
-        <GameScoreboard title="1-10" :timerType="2" />
+        <GameScoreboard title="Overall" :timerType="1" :now="now" />
+        <GameScoreboard title="1-10" :timerType="2" :now="now" />
       </div>
     </div>
   </div>
@@ -26,7 +26,18 @@ import GameScoreboard from "@/components/GameScoreboard.vue";
     GameScoreboard,
   },
 })
-export default class AmongUsGame extends Vue {}
+export default class AmongUsGame extends Vue {
+  now = Date.now();
+  
+  private readonly nowIntervalMs = 11;
+  private nowIntervalHandle!: number;
+
+  mounted() {
+    this.nowIntervalHandle = setInterval(() => {
+      this.now = Date.now();
+    }, this.nowIntervalMs);
+  }
+}
 </script>
 
 <style lang="scss">

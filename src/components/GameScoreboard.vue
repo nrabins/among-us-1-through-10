@@ -36,14 +36,17 @@ import { GameModule } from '@/store/modules/game';
 export default class GameScoreboard extends Vue {
   @Prop({ required: true })
   public timerType!: TimerType;
+  
+  @Prop({ required: true})
+  public now!: number;
 
   get timerData() {
     return GameModule.timerDataForTimerType(this.timerType)
   }
 
   get elapsedTimeMs(): number | null {
-    if (this.timerData.startTimeMs && GameModule.now) {
-      return GameModule.now - this.timerData.startTimeMs;
+    if (this.timerData.startTimeMs && this.now) {
+      return this.now - this.timerData.startTimeMs;
     } else {
       return null;
     }

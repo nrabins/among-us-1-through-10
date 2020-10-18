@@ -5,30 +5,21 @@
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
-  import AmongUsGame from '@/components/AmongUsGame.vue';
-  import { GameModule } from '@/store/modules/game';
+import { Component, Vue } from "vue-property-decorator";
+import AmongUsGame from "@/components/AmongUsGame.vue";
+import { GameModule } from "@/store/modules/game";
 
-  @Component({
-    components: {
-      AmongUsGame
-    }
-  })
-  export default class  extends Vue {
-    private readonly nowIntervalMs = 11;
-    private nowIntervalHandle!: number;
-
-    mounted() {
-      this.nowIntervalHandle = setInterval(() => {
-        GameModule.UPDATE_NOW();
-      }, this.nowIntervalMs)
-    }
-  }
+@Component({
+  components: {
+    AmongUsGame,
+  },
+})
+export default class extends Vue {}
 </script>
 
 <style lang="scss">
-
-html, body {
+html,
+body {
   height: 100vh;
   margin: 0;
 
