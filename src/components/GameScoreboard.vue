@@ -12,15 +12,15 @@
       </div>
       <div v-else>---</div>
     </div>
-    <div class="scores">
+    <div class="times">
       <div class="best-times-title">Best Times</div>
       <div
-        v-for="(score, i) in scores"
+        v-for="(time, i) in times"
         :key="i"
-        :class="{ 'last-score': score == lastTimeMs && score !== null }"
+        :class="{ 'last-time': i == indexOfFirstMatch && time !== null }"
       >
-        {{ score | formatMs }}
-        <span v-if="score != null" class="seconds">s</span>
+        {{ time | formatMs }}
+        <span v-if="time != null" class="seconds">s</span>
       </div>
     </div>
   </div>
@@ -30,18 +30,18 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 import { TimerType } from "@/store/modules/game/types";
-import { GameModule } from '@/store/modules/game';
+import { GameModule } from "@/store/modules/game";
 
 @Component
 export default class GameScoreboard extends Vue {
   @Prop({ required: true })
   public timerType!: TimerType;
-  
-  @Prop({ required: true})
+
+  @Prop({ required: true })
   public now!: number;
 
   get timerData() {
-    return GameModule.timerDataForTimerType(this.timerType)
+    return GameModule.timerDataForTimerType(this.timerType);
   }
 
   get elapsedTimeMs(): number | null {
@@ -56,7 +56,7 @@ export default class GameScoreboard extends Vue {
     return this.timerData.lastTimeMs;
   }
 
-  get scores() {
+  get times() {
     return this.timerData.times;
   }
 
@@ -73,6 +73,10 @@ export default class GameScoreboard extends Vue {
 
   get timerRunning(): boolean {
     return this.timerData.startTimeMs !== null;
+  }
+
+  get indexOfFirstMatch(): number | null {
+    return this.times.indexOf(this.lastTimeMs);
   }
 }
 </script>
@@ -99,14 +103,14 @@ export default class GameScoreboard extends Vue {
     font-size: 2vw;
   }
 
-  .scores {
+  .times {
     .best-times-title {
       font-size: 1vw;
       text-transform: uppercase;
       margin-bottom: 1vw;
     }
 
-    .last-score {
+    .last-time {
       color: yellow;
     }
 
