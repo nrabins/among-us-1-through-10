@@ -9,8 +9,6 @@ export default class Game extends VuexModule implements GameState {
   timerDataOverall = new TimerDataImp(TimerType.Overall)
   timerDataOneThroughTen = new TimerDataImp(TimerType.OneThroughTen);
 
-  // public now = Date.now();
-
   constructor(module: Game) {
     super(module);
     for (let i = 1; i <= 10; i++) {
@@ -20,11 +18,6 @@ export default class Game extends VuexModule implements GameState {
       })
     }
   }
-
-  // @Mutation
-  // UPDATE_NOW() {
-  //   this.now = Date.now();
-  // }
 
   @Mutation
   NEW_GAME() {
@@ -104,8 +97,6 @@ export default class Game extends VuexModule implements GameState {
       }
     }
   }
-
-
 }
 
 export const GameModule = getModule(Game);

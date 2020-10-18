@@ -1,4 +1,8 @@
-# among-us-1-10-ts
+# among-us-1-through-10
+
+You've done it as a crew, you've done it as a ghost...
+
+Now you can have the pleasure of doing the 1-10 task in Among Us without even having to open up the game! Wow!
 
 ## Project setup
 ```

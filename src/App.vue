@@ -7,7 +7,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import AmongUsGame from "@/components/AmongUsGame.vue";
-import { GameModule } from "@/store/modules/game";
 
 @Component({
   components: {
