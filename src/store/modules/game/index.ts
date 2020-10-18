@@ -69,7 +69,6 @@ export default class Game extends VuexModule implements GameState {
 
         this.timerDataOverall.recordTime(now);
         this.timerDataOneThroughTen.recordTime(now);
-
       }
     }
   }
@@ -77,6 +76,7 @@ export default class Game extends VuexModule implements GameState {
   @Mutation
   RESET_PROGRESS() {
     this.numbers.forEach(number => number.clicked = false);
+    this.timerDataOneThroughTen.startTimeMs = null;
   }
   
   get nextNumber(): number {
