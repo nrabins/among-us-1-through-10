@@ -12,6 +12,7 @@
       </div>
       <div class="reset-container">
         <button class="reset" @click="resetData">Reset Data</button>
+        <a href="https://forms.gle/uuZoExLhQ7skuciu7">Submit Feedback</a>
       </div>
     </div>
   </div>
@@ -22,7 +23,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import GameBoard from "@/components/GameBoard.vue";
 import GameScoreboard from "@/components/GameScoreboard.vue";
-import { GameModule } from '@/store/modules/game';
+import { GameModule } from "@/store/modules/game";
 
 @Component({
   components: {
@@ -32,7 +33,7 @@ import { GameModule } from '@/store/modules/game';
 })
 export default class AmongUsGame extends Vue {
   now = Date.now();
-  
+
   private readonly nowIntervalMs = 11;
   private nowIntervalHandle!: number;
 
@@ -51,8 +52,6 @@ export default class AmongUsGame extends Vue {
 </script>
 
 <style lang="scss">
-
-
 $button-text-color: #98ff9e;
 $button-color: #00a141;
 $button-color-hover: lighten($button-color, 7%);
@@ -103,6 +102,10 @@ $button-color-hover: lighten($button-color, 7%);
   .reset-container {
     text-align: center;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     button.reset {
       padding: 0.5vw 1.2vw;
       border-radius: 0.5vw;
@@ -111,7 +114,7 @@ $button-color-hover: lighten($button-color, 7%);
       font-size: 1vw;
       background: $reset-button-color;
       cursor: pointer;
-      
+
       &:hover {
         background-color: $reset-button-hover-color;
       }
