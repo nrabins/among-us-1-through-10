@@ -7,13 +7,18 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import AmongUsGame from "@/components/AmongUsGame.vue";
+import { GameModule } from '@/store/modules/game';
 
 @Component({
   components: {
     AmongUsGame,
   },
 })
-export default class extends Vue {}
+export default class extends Vue {
+  created() {
+    GameModule.LOAD_DATA();
+  }
+}
 </script>
 
 <style lang="scss">
