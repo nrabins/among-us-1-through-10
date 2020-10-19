@@ -9,6 +9,8 @@ export default class Game extends VuexModule implements GameState {
   timerDataOverall = new TimerDataImp(TimerType.Overall)
   timerDataOneThroughTen = new TimerDataImp(TimerType.OneThroughTen);
 
+  private readonly bestTimesKey = "BestTimes";
+
   constructor(module: Game) {
     super(module);
     for (let i = 1; i <= 10; i++) {
@@ -17,6 +19,29 @@ export default class Game extends VuexModule implements GameState {
         clicked: false
       })
     }
+  }
+
+  @Mutation
+  LOAD_DATA() {
+    const dataStr = window.localStorage.getItem(this.bestTimesKey);
+    if (dataStr === null) {
+      return;
+    }
+
+    const data = JSON.parse(dataStr) as {
+      overall: Array<number | null>;
+      oneThroughTen: Array<number | null>;
+    };
+
+    this.timerDataOverall.times = data.overall;
+    this.timerDataOneThroughTen.times = data.oneThroughTen;
+  }
+
+  @Mutation
+  RESET_DATA() {
+    window.localStorage.removeItem(this.bestTimesKey);
+    this.timerDataOverall.times = [null, null, null, null, null];
+    this.timerDataOneThroughTen.times = [null, null, null, null, null];
   }
 
   @Mutation
@@ -69,6 +94,11 @@ export default class Game extends VuexModule implements GameState {
 
         this.timerDataOverall.recordTime(now);
         this.timerDataOneThroughTen.recordTime(now);
+
+        window.localStorage.setItem(this.bestTimesKey, JSON.stringify({
+          overall: this.timerDataOverall.times,
+          oneThroughTen: this.timerDataOneThroughTen.times
+        }));
       }
     }
   }
@@ -78,7 +108,7 @@ export default class Game extends VuexModule implements GameState {
     this.numbers.forEach(number => number.clicked = false);
     this.timerDataOneThroughTen.startTimeMs = null;
   }
-  
+
   get nextNumber(): number {
     const highestNumberSoFar = Math.max(0,
       ...(this.numbers

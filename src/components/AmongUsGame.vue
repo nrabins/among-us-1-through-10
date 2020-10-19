@@ -10,6 +10,9 @@
         <GameScoreboard title="Overall" :timerType="1" :now="now" />
         <GameScoreboard title="1-10" :timerType="2" :now="now" />
       </div>
+      <div class="reset-container">
+        <button class="reset" @click="resetData">Reset Data</button>
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +22,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import GameBoard from "@/components/GameBoard.vue";
 import GameScoreboard from "@/components/GameScoreboard.vue";
+import { GameModule } from '@/store/modules/game';
 
 @Component({
   components: {
@@ -37,10 +41,22 @@ export default class AmongUsGame extends Vue {
       this.now = Date.now();
     }, this.nowIntervalMs);
   }
+
+  resetData(): void {
+    if (window.confirm("Reset all data?\nThis cannot be undone.")) {
+      GameModule.RESET_DATA();
+    }
+  }
 }
 </script>
 
 <style lang="scss">
+
+
+$button-text-color: #98ff9e;
+$button-color: #00a141;
+$button-color-hover: lighten($button-color, 7%);
+
 .container {
   display: flex;
   align-items: center;
@@ -80,34 +96,29 @@ export default class AmongUsGame extends Vue {
       display: inline-block;
     }
   }
-}
 
-$button-text-color: #98ff9e;
-$button-color: #00a141;
-$button-color-hover: lighten($button-color, 7%);
-$button-color-emphasis: #00a141;
-$button-color-emphasis-hover: blue;
+  $reset-button-color: rgb(194, 194, 194);
+  $reset-button-hover-color: rgb(255, 123, 0);
 
-button.new-game {
-  padding: 0.8vw 1.2vw;
-  border-radius: 0.5vw;
-  border: 0.2vw solid black;
-  text-transform: uppercase;
-  font-size: 1.5vw;
-  cursor: pointer;
+  .reset-container {
+    text-align: center;
 
-  color: $button-text-color;
-  background-color: $button-color;
+    button.reset {
+      padding: 0.5vw 1.2vw;
+      border-radius: 0.5vw;
+      border: 0.2vw solid black;
+      text-transform: uppercase;
+      font-size: 1vw;
+      background: $reset-button-color;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: $reset-button-hover-color;
+      }
 
-  &:hover {
-    background-color: $button-color-hover;
-  }
-
-  &.has-won {
-    background-color: $button-color-emphasis;
-
-    &:hover {
-      background-color: $button-color-emphasis-hover;
+      &:active {
+        background-color: darken($reset-button-hover-color, 15%);
+      }
     }
   }
 }
