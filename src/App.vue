@@ -1,22 +1,41 @@
 <template>
   <div id="app">
+    <SettingsModal v-if="isShowingSettings" @close="hideSettings" />
+    <AboutModal v-if="isShowingAbout" @close="hideAbout" />
     <AmongUsGame />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import AmongUsGame from "@/components/AmongUsGame.vue";
+import { Component, Vue } from 'vue-property-decorator';
+import AmongUsGame from '@/components/AmongUsGame.vue';
+import SettingsModal from '@/components/SettingsModal.vue';
+import AboutModal from '@/components/AboutModal.vue';
 import { GameModule } from '@/store/modules/game';
+import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
     AmongUsGame,
+    SettingsModal,
+    AboutModal
   },
 })
 export default class extends Vue {
   created() {
     GameModule.LOAD_DATA();
+  }
+
+  get isShowingSettings() {
+    return SettingsModule.isShowingSettings;
+  }
+
+  get isShowingAbout() {
+    return SettingsModule.isShowingAbout;
+  }
+
+  hideSettings() {
+    SettingsModule.HIDE_SETTINGS();
   }
 }
 </script>
