@@ -1,11 +1,21 @@
 <template>
   <ModalView v-on="$listeners">
-    <template #title> About </template>
+    <template #title>
+      <div class="title">
+        <span> About </span>
+        <span class="version">
+          v{{ version }}
+        </span>
+      </div>
+    </template>
 
-    <p>Version {{ version }}</p>
     <p>
       <em>1-10 Simulator</em> is made with ♥ by
       <a href="https://www.github.com/nrabins">Nate Rabins</a>
+    </p>
+
+    <p>
+      <a href="https://forms.gle/uuZoExLhQ7skuciu7">Submit Feedback</a>
     </p>
 
     <h2>Acknowledgements</h2>
@@ -16,10 +26,7 @@
       </li>
       <li>Thanks to the many Jorblings for testing and ideas</li>
     </ul>
-
-    <p></p>
-    <p></p
-  ></ModalView>
+  </ModalView>
 </template>
 
 <script lang="ts">
@@ -45,6 +52,16 @@ export default class extends Vue {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  .version {
+    font-size: 1rem;
+  }
+}
+
 a {
   text-decoration: none;
   color: rgb(20, 154, 216);
@@ -55,7 +72,12 @@ a {
 }
 
 h2 {
-  margin-top: 3rem;
+  margin-top: 1.5rem;
   font-size: 1rem;
+}
+
+em {
+  font-style: normal;
+  font-weight: bold;
 }
 </style>

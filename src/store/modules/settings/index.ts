@@ -5,7 +5,7 @@ import { SettingsState } from './types';
 @Module({ dynamic: true, store, name: 'settings' })
 export default class Settings extends VuexModule implements SettingsState {
   isShowingSettings = false;
-  isShowingAbout = true;
+  isShowingAbout = false;
   version = "1.1.0";
 
   @Mutation
@@ -27,7 +27,7 @@ export default class Settings extends VuexModule implements SettingsState {
 
   @Mutation
   HIDE_ABOUT() {
-    this.isShowingSettings = false;
+    this.isShowingAbout = false;
   }
 }
 

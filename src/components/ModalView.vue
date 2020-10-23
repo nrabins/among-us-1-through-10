@@ -1,6 +1,6 @@
 <template>
   <div class="modal-container">
-    <div class="modal-overlay" @click="$emit('close')"/>
+    <div class="modal-overlay" @click="$emit('close')" />
     <div class="modal-content">
       <div class="close-button noselect" @click="$emit('close')">✕</div>
       <h1>
@@ -29,8 +29,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class extends Vue {
-}
+export default class extends Vue {}
 </script>
 
 <style lang="scss" scoped>
@@ -57,7 +56,7 @@ export default class extends Vue {
 
   .modal-content {
     background-color: #202225;
-    border: rgba(255, 255, 255, 0.329) solid .1vw;
+    border: rgba(255, 255, 255, 0.329) solid 0.1vw;
     border-radius: 1vw;
     box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.9);
 
@@ -65,13 +64,13 @@ export default class extends Vue {
 
     z-index: 1001;
 
-    padding: 1vw;
+    padding: 1vw 2vw;
     position: relative;
 
     .close-button {
       padding: 1vw;
       position: absolute;
-      top: -.4vw;
+      top: -0.4vw;
       right: 0.1vw;
       font-size: 1.5vw;
       font-weight: bolder;
@@ -85,16 +84,14 @@ export default class extends Vue {
     }
 
     h1 {
-      padding: 0 4vw 1vw 0;
+      padding: 0 0 1vw 0;
       border-bottom: 0.1vw solid rgb(155, 155, 155);
       font-size: 1.5rem;
     }
 
     .body {
-      margin-top: 2rem;
+      margin-top: 1rem;
     }
-
-    
   }
 }
 </style>

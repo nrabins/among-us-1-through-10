@@ -29,9 +29,11 @@ export default class extends Vue {
 button {
   background-color: rgba(60, 69, 202, 0.74);
   color: #eee;
-  padding: 1rem 2rem;
-  border: 1px solid white;
+  padding: .8rem 1.6rem;
+  border: 1px solid #eee;
   border-radius: 2px;
+
+  text-transform: uppercase;
 
   cursor: pointer;
 

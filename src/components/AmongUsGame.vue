@@ -12,8 +12,7 @@
       </div>
       <div class="settings-container">
         <button class="settings-button" @click="showSettings">⚙ Settings</button>
-        <button class="about-button">About</button>
-        <!-- <a href="https://forms.gle/uuZoExLhQ7skuciu7">Submit Feedback</a> -->
+        <button class="about-button" @click="showAbout">About</button>
       </div>
     </div>
   </div>
@@ -24,7 +23,6 @@ import { Component, Vue } from "vue-property-decorator";
 
 import GameBoard from "@/components/GameBoard.vue";
 import GameScoreboard from "@/components/GameScoreboard.vue";
-import { GameModule } from "@/store/modules/game";
 import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
@@ -47,6 +45,10 @@ export default class AmongUsGame extends Vue {
 
   showSettings() {
     SettingsModule.SHOW_SETTINGS();
+  }
+
+  showAbout() {
+    SettingsModule.SHOW_ABOUT();
   }
 
 }

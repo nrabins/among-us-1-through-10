@@ -18,7 +18,7 @@ import { SettingsModule } from '@/store/modules/settings';
   components: {
     AmongUsGame,
     SettingsModal,
-    AboutModal
+    AboutModal,
   },
 })
 export default class extends Vue {
@@ -36,6 +36,10 @@ export default class extends Vue {
 
   hideSettings() {
     SettingsModule.HIDE_SETTINGS();
+  }
+
+  hideAbout() {
+    SettingsModule.HIDE_ABOUT();
   }
 }
 </script>
