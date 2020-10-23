@@ -21,9 +21,10 @@ import { SettingsModule } from '@/store/modules/settings';
     AboutModal,
   },
 })
-export default class extends Vue {
+export default class App extends Vue {
   created() {
     GameModule.LOAD_DATA();
+    SettingsModule.LOAD_GAME_SETTINGS();
   }
 
   get isShowingSettings() {

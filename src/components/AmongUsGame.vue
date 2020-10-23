@@ -2,7 +2,6 @@
   <div class="container">
     <div class="game-board-and-source">
       <GameBoard />
-      <!-- <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a> -->
     </div>
 
     <div class="meta">

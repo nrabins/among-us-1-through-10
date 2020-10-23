@@ -29,7 +29,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class extends Vue {}
+export default class ModalView extends Vue {}
 </script>
 
 <style lang="scss" scoped>
@@ -43,6 +43,8 @@ export default class extends Vue {}
   display: flex;
   justify-content: center;
   align-items: center;
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
   .modal-overlay {
     position: absolute;
@@ -68,11 +70,11 @@ export default class extends Vue {}
     position: relative;
 
     .close-button {
-      padding: 1vw;
+      padding: .5rem;
       position: absolute;
-      top: -0.4vw;
-      right: 0.1vw;
-      font-size: 1.5vw;
+      top: -0.1rem;
+      right: 0.1rem;
+      font-size: 1rem;
       font-weight: bolder;
       cursor: pointer;
 

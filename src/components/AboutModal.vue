@@ -3,9 +3,7 @@
     <template #title>
       <div class="title">
         <span> About </span>
-        <span class="version">
-          v{{ version }}
-        </span>
+        <span class="version"> v{{ version }} </span>
       </div>
     </template>
 
@@ -15,6 +13,8 @@
     </p>
 
     <p>
+      <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
+      ///
       <a href="https://forms.gle/uuZoExLhQ7skuciu7">Submit Feedback</a>
     </p>
 
@@ -40,7 +40,7 @@ import { SettingsModule } from '@/store/modules/settings';
     ModalView,
   },
 })
-export default class extends Vue {
+export default class AboutModal extends Vue {
   get version() {
     return SettingsModule.version;
   }
@@ -48,9 +48,6 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-* {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
 .title {
   display: flex;

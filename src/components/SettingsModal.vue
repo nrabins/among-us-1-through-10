@@ -1,6 +1,15 @@
 <template>
   <ModalView v-on="$listeners">
     <template #title> Settings </template>
+    <div class="checkbox">
+      <input
+        type="checkbox"
+        id="newGameOnSave"
+        v-model="gameSettings.newGameOnMistake"
+        @change="onSettingChanged"
+      />
+      <label for="newGameOnSave">New Game on Mistake</label>
+    </div>
     <button class="reset" @click="resetData">Reset Data</button>
   </ModalView>
 </template>
@@ -10,13 +19,27 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import ModalView from '@/components/ModalView.vue';
 import { GameModule } from '@/store/modules/game';
+import { SettingsModule } from '@/store/modules/settings';
+import { GameSettings } from '@/store/modules/settings/types';
 
 @Component({
   components: {
     ModalView,
   },
 })
-export default class extends Vue {
+export default class SettingsModal extends Vue {
+  gameSettings: GameSettings = {
+    newGameOnMistake: false,
+  };
+
+  created() {
+    this.gameSettings = { ...SettingsModule.gameSettings };
+  }
+
+  onSettingChanged() {
+    SettingsModule.UPDATE_GAME_SETTINGS(this.gameSettings);
+  }
+
   resetData(): void {
     if (window.confirm('Reset all data?\nThis cannot be undone.')) {
       GameModule.RESET_DATA();
@@ -26,10 +49,24 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.checkbox {
+  margin: 1rem 0;
+
+  cursor: pointer !important;
+  input {
+    padding: 0.5rem;
+  }
+
+  label {
+    margin-left: 0.7rem;
+    cursor: pointer;
+  }
+}
+
 button {
   background-color: rgba(60, 69, 202, 0.74);
   color: #eee;
-  padding: .8rem 1.6rem;
+  padding: 0.8rem 1.6rem;
   border: 1px solid #eee;
   border-radius: 2px;
 
@@ -38,7 +75,7 @@ button {
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(85, 95, 231, 0.74)
+    background-color: rgba(85, 95, 231, 0.74);
   }
 }
 </style>
