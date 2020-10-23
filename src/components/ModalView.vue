@@ -66,7 +66,7 @@ export default class ModalView extends Vue {}
 
     z-index: 1001;
 
-    padding: 1vw 2vw;
+    padding: .8rem 1.6rem;
     position: relative;
 
     .close-button {
@@ -86,7 +86,7 @@ export default class ModalView extends Vue {}
     }
 
     h1 {
-      padding: 0 0 1vw 0;
+      padding: 0 0 1rem 0;
       border-bottom: 0.1vw solid rgb(155, 155, 155);
       font-size: 1.5rem;
     }
