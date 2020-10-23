@@ -59,7 +59,7 @@ export default class ModalView extends Vue {}
   .modal-content {
     background-color: #202225;
     border: rgba(255, 255, 255, 0.329) solid 0.1vw;
-    border-radius: 1vw;
+    border-radius: .5rem;
     box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.9);
 
     color: #eee;
