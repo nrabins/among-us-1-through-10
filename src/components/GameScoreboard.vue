@@ -89,7 +89,7 @@ export default class GameScoreboard extends Vue {
   justify-content: space-between;
 
   text-align: center;
-  font-size: 1vw;
+  font-size: 1.2vw;
 
   .title {
     padding: 1vw;

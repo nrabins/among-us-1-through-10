@@ -40,11 +40,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import GameButton from "@/components/GameButton.vue";
+import { Component, Vue } from 'vue-property-decorator';
+import GameButton from '@/components/GameButton.vue';
 
-import { GameModule } from "@/store/modules/game";
-import { Phase } from "@/store/modules/game/types";
+import { GameModule } from '@/store/modules/game';
+import { Phase } from '@/store/modules/game/types';
+
+import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
@@ -52,6 +54,7 @@ import { Phase } from "@/store/modules/game/types";
   },
 })
 export default class GameBoard extends Vue {
+
   blinkInterval: number | null = null;
   isBlinking = false;
 
@@ -81,14 +84,18 @@ export default class GameBoard extends Vue {
     }
 
     if (number != GameModule.nextNumber) {
-      GameModule.RESET_PROGRESS();
-      this.animateError();
+      if (SettingsModule.gameSettings.newGameOnMistake) {
+        this.animateError(GameModule.SET_INACTIVE);
+      } else {
+        GameModule.RESET_PROGRESS();
+        this.animateError();
+      }
     } else {
       GameModule.CLICK_NUMBER(number);
     }
   }
 
-  animateError(): void {
+  animateError(callback?: Function): void {
     if (this.blinkInterval) {
       return;
     }
@@ -106,6 +113,9 @@ export default class GameBoard extends Vue {
       if (blinksLeft == 0 && this.blinkInterval != null) {
         clearInterval(this.blinkInterval);
         this.blinkInterval = null;
+        if (callback) {
+          callback.apply(this);
+        }
       }
     }, blinkTimeMs);
   }
@@ -116,6 +126,7 @@ export default class GameBoard extends Vue {
 .gameboard {
   // height: 26.9vh;
   // width: 39vw;
+
   background-color: #033cd1;
   border: 0.1vw solid #7f8eb7;
 }

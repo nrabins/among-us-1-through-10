@@ -2,7 +2,6 @@
   <div class="container">
     <div class="game-board-and-source">
       <GameBoard />
-      <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
     </div>
 
     <div class="meta">
@@ -10,8 +9,9 @@
         <GameScoreboard title="Overall" :timerType="1" :now="now" />
         <GameScoreboard title="1-10" :timerType="2" :now="now" />
       </div>
-      <div class="reset-container">
-        <button class="reset" @click="resetData">Reset Data</button>
+      <div class="settings-container">
+        <button class="settings-button" @click="showSettings">⚙ Settings</button>
+        <button class="about-button" @click="showAbout">About</button>
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import GameBoard from "@/components/GameBoard.vue";
 import GameScoreboard from "@/components/GameScoreboard.vue";
-import { GameModule } from '@/store/modules/game';
+import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
@@ -32,7 +32,7 @@ import { GameModule } from '@/store/modules/game';
 })
 export default class AmongUsGame extends Vue {
   now = Date.now();
-  
+
   private readonly nowIntervalMs = 11;
   private nowIntervalHandle!: number;
 
@@ -42,17 +42,18 @@ export default class AmongUsGame extends Vue {
     }, this.nowIntervalMs);
   }
 
-  resetData(): void {
-    if (window.confirm("Reset all data?\nThis cannot be undone.")) {
-      GameModule.RESET_DATA();
-    }
+  showSettings() {
+    SettingsModule.SHOW_SETTINGS();
   }
+
+  showAbout() {
+    SettingsModule.SHOW_ABOUT();
+  }
+
 }
 </script>
 
 <style lang="scss">
-
-
 $button-text-color: #98ff9e;
 $button-color: #00a141;
 $button-color-hover: lighten($button-color, 7%);
@@ -76,7 +77,7 @@ $button-color-hover: lighten($button-color, 7%);
 }
 
 .meta {
-  margin: 1vh;
+  margin-left: 2vw;
   display: flex;
   flex-direction: column;
 
@@ -90,35 +91,49 @@ $button-color-hover: lighten($button-color, 7%);
       border-right: 0.1vw solid black;
     }
 
-    margin: 1vw;
+    margin-bottom: 1vw;
 
     > * {
       display: inline-block;
     }
   }
 
-  $reset-button-color: rgb(194, 194, 194);
-  $reset-button-hover-color: rgb(255, 123, 0);
+  $pill-border-radius: 1vw;
 
-  .reset-container {
-    text-align: center;
+  .settings-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    button {
+      height: 3vw;
+      padding: 0vw 1vw;
 
-    button.reset {
-      padding: 0.5vw 1.2vw;
-      border-radius: 0.5vw;
-      border: 0.2vw solid black;
-      text-transform: uppercase;
-      font-size: 1vw;
-      background: $reset-button-color;
+
       cursor: pointer;
-      
+      text-transform: uppercase;
+
+      color: white;
+      background-color: rgba(0, 0, 0, 0.308);
+      border: .2vw solid black;
+      font-size: 1vw;
+
       &:hover {
-        background-color: $reset-button-hover-color;
+        color: rgb(192, 192, 192);
+      }
+      
+      &:first-child {
+        border-top-left-radius: $pill-border-radius;
+        border-bottom-left-radius: $pill-border-radius;
+        border-right: none;
       }
 
-      &:active {
-        background-color: darken($reset-button-hover-color, 15%);
+      &:last-child {
+        border-top-right-radius: $pill-border-radius;
+        border-bottom-right-radius: $pill-border-radius;
       }
+
     }
   }
 }
