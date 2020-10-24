@@ -1,67 +1,63 @@
 <template>
   <div class="container">
     <div class="game-board-and-source">
-      <GameBoard
-        ref="gameBoard"
-        @newGameRequest="newGame"
-        @firstClick="onFirstClick"
-        @gameEnd="onGameEnd"
-      />
-      <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
-
+      <GameBoard />
     </div>
-    
+
     <div class="meta">
-      <!-- <button class="new-game" :class="{ 'has-won': hasWon }" @click="newGame">
-        New Game
-      </button> -->
       <div class="scoreboards">
-        <GameScoreboard ref="sinceVisibleScoreboard" title="Total" />
-        <GameScoreboard
-          ref="sinceFirstClickScoreboard"
-          title="First Click"
-        />
+        <GameScoreboard title="Overall" :timerType="1" :now="now" />
+        <GameScoreboard title="1-10" :timerType="2" :now="now" />
+      </div>
+      <div class="settings-container">
+        <button class="settings-button" @click="showSettings">⚙ Settings</button>
+        <button class="about-button" @click="showAbout">About</button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import GameBoard from '@/components/GameBoard';
-import GameScoreboard from '@/components/GameScoreboard';
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 
-export default {
+import GameBoard from "@/components/GameBoard.vue";
+import GameScoreboard from "@/components/GameScoreboard.vue";
+import { SettingsModule } from '@/store/modules/settings';
+
+@Component({
   components: {
     GameBoard,
     GameScoreboard,
   },
-  data() {
-    return {
-      hasWon: false,
-    };
-  },
-  methods: {
-    newGame() {
-      this.hasWon = false;
-      this.$refs.gameBoard.newGame();
-      this.$refs.sinceVisibleScoreboard.startTimer();
-      this.$refs.sinceFirstClickScoreboard.clearTimer();
-    },
-    onFirstClick() {
-      // this.firstClickMs = Date.now();
-      this.$refs.sinceFirstClickScoreboard.startTimer();
-    },
-    onGameEnd() {
-      this.hasWon = true;
-      this.$refs.sinceVisibleScoreboard.stopTimer();
-      this.$refs.sinceFirstClickScoreboard.stopTimer();
-      // document.addEventListener("mousedown", this.newGame, { once: true });
-    },
-  },
-};
+})
+export default class AmongUsGame extends Vue {
+  now = Date.now();
+
+  private readonly nowIntervalMs = 11;
+  private nowIntervalHandle!: number;
+
+  mounted() {
+    this.nowIntervalHandle = setInterval(() => {
+      this.now = Date.now();
+    }, this.nowIntervalMs);
+  }
+
+  showSettings() {
+    SettingsModule.SHOW_SETTINGS();
+  }
+
+  showAbout() {
+    SettingsModule.SHOW_ABOUT();
+  }
+
+}
 </script>
 
 <style lang="scss">
+$button-text-color: #98ff9e;
+$button-color: #00a141;
+$button-color-hover: lighten($button-color, 7%);
+
 .container {
   display: flex;
   align-items: center;
@@ -73,7 +69,7 @@ export default {
   align-items: center;
 
   a {
-    font-size: .8vw;
+    font-size: 0.8vw;
     color: white;
 
     margin-top: 1.5vw;
@@ -81,65 +77,74 @@ export default {
 }
 
 .meta {
-  margin: 1vh;
+  margin-left: 2vw;
   display: flex;
   flex-direction: column;
 
   .scoreboards {
     border-radius: 1vw;
-    border: .2vw solid black;
+    border: 0.2vw solid black;
     background-color: rgba(0, 0, 0, 0.308);
     color: rgba(255, 255, 255, 0.801);
 
     > *:first-child {
-      border-right: .1vw solid black;
+      border-right: 0.1vw solid black;
     }
 
-    margin: 1vw;
+    margin-bottom: 1vw;
 
     > * {
       display: inline-block;
     }
   }
-}
 
-$button-text-color: #98ff9e;
-$button-color: #00a141;
-$button-color-hover: lighten($button-color, 7%);
-$button-color-emphasis: #00a141;
-$button-color-emphasis-hover: blue;
+  $pill-border-radius: 1vw;
 
-button.new-game {
-  padding: 0.8vw 1.2vw;
-  border-radius: 0.5vw;
-  border: 0.2vw solid black;
-  text-transform: uppercase;
-  font-size: 1.5vw;
-  cursor: pointer;
+  .settings-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    button {
+      height: 3vw;
+      padding: 0vw 1vw;
 
-  color: $button-text-color;
-  background-color: $button-color;
 
-  &:hover {
-    background-color: $button-color-hover;
-  }
+      cursor: pointer;
+      text-transform: uppercase;
 
-  &.has-won {
-    background-color: $button-color-emphasis;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.308);
+      border: .2vw solid black;
+      font-size: 1vw;
 
-    &:hover {
-      background-color: $button-color-emphasis-hover;
+      &:hover {
+        color: rgb(192, 192, 192);
+      }
+      
+      &:first-child {
+        border-top-left-radius: $pill-border-radius;
+        border-bottom-left-radius: $pill-border-radius;
+        border-right: none;
+      }
+
+      &:last-child {
+        border-top-right-radius: $pill-border-radius;
+        border-bottom-right-radius: $pill-border-radius;
+      }
+
     }
   }
 }
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

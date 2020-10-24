@@ -6,8 +6,8 @@
           <div class="border-1">
             <div
               class="new-game-overlay noselect"
-              v-show="hasWon"
-              @click="requestNewGame"
+              v-show="showNewGameOverlay"
+              @click="newGame"
             >
               CLICK TO START
             </div>
@@ -39,147 +39,87 @@
   </div>
 </template>
 
-<script>
-import GameButton from '@/components/GameButton';
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import GameButton from '@/components/GameButton.vue';
 
-export default {
+import { GameModule } from '@/store/modules/game';
+import { Phase } from '@/store/modules/game/types';
+
+import { SettingsModule } from '@/store/modules/settings';
+
+@Component({
   components: {
     GameButton,
   },
-  data() {
-    return {
-      blinkInterval: null,
-      isBlinking: false,
-      hasWon: true,
-      numbers: [
-        {
-          number: 1,
-          clicked: false,
-        },
-        {
-          number: 2,
-          clicked: false,
-        },
-        {
-          number: 3,
-          clicked: false,
-        },
-        {
-          number: 4,
-          clicked: false,
-        },
-        {
-          number: 5,
-          clicked: false,
-        },
-        {
-          number: 6,
-          clicked: false,
-        },
-        {
-          number: 7,
-          clicked: false,
-        },
-        {
-          number: 8,
-          clicked: false,
-        },
-        {
-          number: 9,
-          clicked: false,
-        },
-        {
-          number: 10,
-          clicked: false,
-        },
-      ],
-    };
-  },
-  computed: {
-    isAnimating() {
-      return this.blinkInterval !== null;
-    },
-    firstRow() {
-      return this.numbers.slice(0, 5);
-    },
-    secondRow() {
-      return this.numbers.slice(5);
-    },
-  },
-  methods: {
-    requestNewGame() {
-      this.$emit('newGameRequest');
-    },
-    newGame() {
-      const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      for (let i = numbers.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-      }
+})
+export default class GameBoard extends Vue {
 
-      this.numbers = numbers.map((i) => ({
-        number: i,
-        clicked: false,
-      }));
+  blinkInterval: number | null = null;
+  isBlinking = false;
 
-      this.hasWon = false;
-    },
-    handleClick(number) {
-      if (this.isAnimating || this.hasWon) {
-        return;
-      }
+  get isAnimating() {
+    return this.blinkInterval !== null;
+  }
 
-      const numberData = this.numbers.find((x) => x.number == number);
+  get firstRow() {
+    return GameModule.numbers.slice(0, 5);
+  }
 
-      const highestNumberSoFar = Math.max(
-        0,
-        ...this.numbers.filter((n) => n.clicked).map((n) => n.number)
-      );
+  get secondRow() {
+    return GameModule.numbers.slice(5);
+  }
 
-      if (number == highestNumberSoFar + 1) {
-        if (number == 1) {
-          this.$emit('firstClick');
-        }
-        numberData.clicked = true;
+  get showNewGameOverlay() {
+    return GameModule.phase == Phase.Inactive;
+  }
 
-        // Win condition
-        if (this.numbers.every((n) => n.clicked)) {
-          // if (this.numbers.filter((n) => n.clicked).length == 2) {
-          this.hasWon = true;
-          this.$emit('gameEnd');
-        }
+  newGame(): void {
+    GameModule.NEW_GAME();
+  }
+
+  handleClick(number: number): void {
+    if (this.isAnimating || GameModule.phase == Phase.Inactive) {
+      return;
+    }
+
+    if (number != GameModule.nextNumber) {
+      if (SettingsModule.gameSettings.newGameOnMistake) {
+        this.animateError(GameModule.SET_INACTIVE);
       } else {
-        this.clearProgress();
+        GameModule.RESET_PROGRESS();
+        this.animateError();
       }
-    },
-    clearProgress() {
-      this.numbers.forEach((number) => (number.clicked = false));
-      this.animateError();
-    },
-    animateError() {
-      if (this.blinkInterval) {
-        return;
+    } else {
+      GameModule.CLICK_NUMBER(number);
+    }
+  }
+
+  animateError(callback?: Function): void {
+    if (this.blinkInterval) {
+      return;
+    }
+
+    const blinkTimeMs = 250;
+    let blinksLeft = 2;
+    this.isBlinking = true;
+
+    this.blinkInterval = setInterval(() => {
+      this.isBlinking = !this.isBlinking;
+      if (!this.isBlinking) {
+        blinksLeft--;
       }
-      this.animating = true;
 
-      const blinkTimeMs = 250;
-      let blinksLeft = 2;
-      this.isBlinking = true;
-
-      this.blinkInterval = setInterval(() => {
-        this.isBlinking = !this.isBlinking;
-        if (!this.isBlinking) {
-          blinksLeft--;
+      if (blinksLeft == 0 && this.blinkInterval != null) {
+        clearInterval(this.blinkInterval);
+        this.blinkInterval = null;
+        if (callback) {
+          callback.apply(this);
         }
-
-        if (blinksLeft == 0) {
-          clearInterval(this.blinkInterval);
-          this.blinkInterval = null;
-        }
-      }, blinkTimeMs);
-    },
-  },
-};
+      }
+    }, blinkTimeMs);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
