@@ -9,12 +9,14 @@
 
     <p>
       <em>1-10 Simulator</em> is made with ♥ by
-      <a href="https://www.github.com/nrabins" target="_blank">Nate Rabins</a>
+      <a href="https://www.github.com/nrabins" target="_blank">nrabins</a>
     </p>
 
     <p>
-      <a href="https://github.com/nrabins/among-us-1-through-10" target="_blank">View Source</a>
-      ///
+      <a href="https://github.com/nrabins/among-us-1-through-10" target="_blank">Source</a>
+      |
+      <a href="https://github.com/nrabins/among-us-1-through-10/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+      |
       <a href="https://forms.gle/uuZoExLhQ7skuciu7" target="_blank">Submit Feedback</a>
     </p>
 
