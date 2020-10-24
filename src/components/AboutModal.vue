@@ -9,19 +9,19 @@
 
     <p>
       <em>1-10 Simulator</em> is made with ♥ by
-      <a href="https://www.github.com/nrabins">Nate Rabins</a>
+      <a href="https://www.github.com/nrabins" target="_blank">Nate Rabins</a>
     </p>
 
     <p>
-      <a href="https://github.com/nrabins/among-us-1-through-10">View Source</a>
+      <a href="https://github.com/nrabins/among-us-1-through-10" target="_blank">View Source</a>
       ///
-      <a href="https://forms.gle/uuZoExLhQ7skuciu7">Submit Feedback</a>
+      <a href="https://forms.gle/uuZoExLhQ7skuciu7" target="_blank">Submit Feedback</a>
     </p>
 
     <h2>Acknowledgements</h2>
     <ul>
       <li>
-        Thanks to <a href="https://twitter.com/JoINrbs?s=20">Jorbs</a> for the
+        Thanks to <a href="https://twitter.com/JoINrbs?s=20" target="_blank">Jorbs</a> for the
         inspiration
       </li>
       <li>Thanks to the many Jorblings for testing and ideas</li>
