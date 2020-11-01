@@ -10,7 +10,9 @@
         <GameScoreboard title="1-10" :timerType="2" :now="now" />
       </div>
       <div class="settings-container">
-        <button class="settings-button" @click="showSettings">⚙ Settings</button>
+        <button class="settings-button" @click="showSettings">
+          ⚙ Settings
+        </button>
         <button class="about-button" @click="showAbout">About</button>
       </div>
     </div>
@@ -20,9 +22,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import GameBoard from "@/components/GameBoard.vue";
-import GameScoreboard from "@/components/GameScoreboard.vue";
-import { SettingsModule } from '@/store/modules/settings';
+import GameBoard from "@/components/game/single/GameBoard.vue";
+import GameScoreboard from "@/components/game/single/GameScoreboard.vue";
+import { SettingsModule } from "@/store/modules/settings";
 
 @Component({
   components: {
@@ -49,11 +51,10 @@ export default class AmongUsGame extends Vue {
   showAbout() {
     SettingsModule.SHOW_ABOUT();
   }
-
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $button-text-color: #98ff9e;
 $button-color: #00a141;
 $button-color-hover: lighten($button-color, 7%);
@@ -105,24 +106,23 @@ $button-color-hover: lighten($button-color, 7%);
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    
+
     button {
       height: 3vw;
       padding: 0vw 1vw;
-
 
       cursor: pointer;
       text-transform: uppercase;
 
       color: white;
       background-color: rgba(0, 0, 0, 0.308);
-      border: .2vw solid black;
+      border: 0.2vw solid black;
       font-size: 1vw;
 
       &:hover {
         color: rgb(192, 192, 192);
       }
-      
+
       &:first-child {
         border-top-left-radius: $pill-border-radius;
         border-bottom-left-radius: $pill-border-radius;
@@ -133,18 +133,8 @@ $button-color-hover: lighten($button-color, 7%);
         border-top-right-radius: $pill-border-radius;
         border-bottom-right-radius: $pill-border-radius;
       }
-
     }
   }
 }
 
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
 </style>

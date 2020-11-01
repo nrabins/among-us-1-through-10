@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import AmongUsGame from '@/components/AmongUsGame.vue';
-import SettingsModal from '@/components/SettingsModal.vue';
-import AboutModal from '@/components/AboutModal.vue';
-import { GameModule } from '@/store/modules/game';
-import { SettingsModule } from '@/store/modules/settings';
+import { Component, Vue } from "vue-property-decorator";
+import AmongUsGame from "@/components/game/single/AmongUsGame.vue";
+import SettingsModal from "@/components/shared/SettingsModal.vue";
+import AboutModal from "@/components/shared/AboutModal.vue";
+import { GameModule } from "@/store/modules/game/single";
+import { SettingsModule } from "@/store/modules/settings";
 
 @Component({
   components: {
@@ -64,5 +64,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

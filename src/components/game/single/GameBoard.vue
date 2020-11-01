@@ -41,10 +41,10 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import GameButton from '@/components/GameButton.vue';
+import GameButton from '@/components/game/single/GameButton.vue';
 
-import { GameModule } from '@/store/modules/game';
-import { Phase } from '@/store/modules/game/types';
+import { GameModule } from '@/store/modules/game/single';
+import { Phase } from '@/store/modules/game/shared/types';
 
 import { SettingsModule } from '@/store/modules/settings';
 

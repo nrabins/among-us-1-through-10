@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import ModalView from '@/components/ModalView.vue';
+import ModalView from '@/components/shared/ModalView.vue';
 import { SettingsModule } from '@/store/modules/settings';
 
 @Component({

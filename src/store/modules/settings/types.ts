@@ -6,4 +6,5 @@ export interface SettingsState {
 
 export interface GameSettings {
   newGameOnMistake: boolean;
+  isSeeded: boolean;
 }

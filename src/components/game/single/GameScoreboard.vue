@@ -29,8 +29,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { TimerType } from "@/store/modules/game/types";
-import { GameModule } from "@/store/modules/game";
+import { TimerType } from "@/store/modules/game/shared/types";
+import { GameModule } from "@/store/modules/game/single";
 
 @Component
 export default class GameScoreboard extends Vue {

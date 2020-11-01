@@ -9,7 +9,8 @@ export default class Settings extends VuexModule implements SettingsState {
   isShowingAbout = false;
 
   gameSettings: GameSettings = {
-    newGameOnMistake: false
+    newGameOnMistake: false,
+    isSeeded: false
   }
 
   private readonly settingsKey = "Settings";

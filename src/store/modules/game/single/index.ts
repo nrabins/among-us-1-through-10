@@ -1,6 +1,6 @@
 import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators';
 import store from '@/store'
-import { GameState, Phase, GameNumber, TimerData, TimerType, TimerDataImp } from './types';
+import { GameState, Phase, GameNumber, TimerData, TimerType, TimerDataImp } from '../shared/types';
 
 @Module({ dynamic: true, store, name: 'game' })
 export default class Game extends VuexModule implements GameState {
