@@ -1,9 +1,10 @@
 import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators';
 import store from '@/store'
-import { GameState, Phase, GameNumber, TimerData, TimerType, TimerDataImp } from '../shared/types';
+import { Phase, GameNumber} from '../shared/types';
+import { SingleGameState, TimerData, TimerDataImp, TimerType } from './types';
 
-@Module({ dynamic: true, store, name: 'game' })
-export default class Game extends VuexModule implements GameState {
+@Module({ dynamic: true, store, name: 'single' })
+export default class SingleGame extends VuexModule implements SingleGameState {
   phase = Phase.Inactive;
   numbers = [] as GameNumber[];
   timerDataOverall = new TimerDataImp(TimerType.Overall)
@@ -11,7 +12,7 @@ export default class Game extends VuexModule implements GameState {
 
   private readonly bestTimesKey = "BestTimes";
 
-  constructor(module: Game) {
+  constructor(module: SingleGame) {
     super(module);
     for (let i = 1; i <= 10; i++) {
       this.numbers.push({
@@ -138,4 +139,4 @@ export default class Game extends VuexModule implements GameState {
   }
 }
 
-export const GameModule = getModule(Game);
+export const SingleGameModule = getModule(SingleGame);

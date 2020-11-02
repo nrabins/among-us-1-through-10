@@ -18,9 +18,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 import ModalView from '@/components/shared/ModalView.vue';
-import { GameModule } from '@/store/modules/game/single';
+import { SingleGameModule } from '@/store/modules/game/single';
 import { SettingsModule } from '@/store/modules/settings';
-import { GameSettings } from '@/store/modules/settings/types';
+import { GameMode, GameSettings } from '@/store/modules/settings/types';
 
 @Component({
   components: {
@@ -30,7 +30,7 @@ import { GameSettings } from '@/store/modules/settings/types';
 export default class SettingsModal extends Vue {
   gameSettings: GameSettings = {
     newGameOnMistake: false,
-    isSeeded: false
+    gameMode: GameMode.Single
   };
 
   created() {
@@ -43,7 +43,7 @@ export default class SettingsModal extends Vue {
 
   resetData(): void {
     if (window.confirm('Reset all data?\nThis cannot be undone.')) {
-      GameModule.RESET_DATA();
+      SingleGameModule.RESET_DATA();
     }
   }
 }

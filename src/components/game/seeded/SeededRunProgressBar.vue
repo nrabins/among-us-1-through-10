@@ -14,17 +14,17 @@
 </template>
 
 <script lang="ts">
-// import { GameModule } from '@/store/modules/game';
+import { SeededGameModule } from '@/store/modules/game/seeded';
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class SeededRunProgressBar extends Vue {
   get activeIndex() {
-    return 3; //return GameModule.seededRunActiveIndex;
+    return SeededGameModule.seededRunActiveIndex;
   }
 
   get total() {
-    return 10; //return GameModule.seededRunTrials.length;
+    return SeededGameModule.seededRunTrials.length;
   }
 }
 </script>

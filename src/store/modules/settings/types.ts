@@ -6,5 +6,10 @@ export interface SettingsState {
 
 export interface GameSettings {
   newGameOnMistake: boolean;
-  isSeeded: boolean;
+  gameMode: GameMode;
+}
+
+export enum GameMode {
+  Single,
+  Seeded
 }

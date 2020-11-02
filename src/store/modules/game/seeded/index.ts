@@ -1,14 +1,14 @@
 import { dummyData } from './data';
 import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators';
 import store from '@/store'
-import { GameState, Phase, GameNumber, TimerData, TimerType, TimerDataImp } from '../shared/types';
+import { SeededGameState, TimerData, TimerDataImp, TimerType } from './types';
+import { GameNumber, Phase } from '../shared/types';
 
 @Module({ dynamic: true, store, name: 'seeded' })
-export default class SeededGame extends VuexModule implements GameState {
+export default class SeededGame extends VuexModule implements SeededGameState {
   phase = Phase.Inactive;
   numbers = [] as GameNumber[];
   timerDataOverall = new TimerDataImp(TimerType.Overall)
-  timerDataOneThroughTen = new TimerDataImp(TimerType.OneThroughTen);
   
   isSeededRun = true;
   seededRunActiveIndex = 0;
@@ -39,14 +39,12 @@ export default class SeededGame extends VuexModule implements GameState {
     };
 
     this.timerDataOverall.times = data.overall;
-    this.timerDataOneThroughTen.times = data.oneThroughTen;
   }
 
   @Mutation
   RESET_DATA() {
     window.localStorage.removeItem(this.bestTimesKey);
     this.timerDataOverall.times = [null, null, null, null, null];
-    this.timerDataOneThroughTen.times = [null, null, null, null, null];
   }
 
   @Mutation
@@ -54,8 +52,6 @@ export default class SeededGame extends VuexModule implements GameState {
     this.phase = Phase.Inactive;
     this.timerDataOverall.lastTimeMs = null;
     this.timerDataOverall.startTimeMs = null;
-    this.timerDataOneThroughTen.lastTimeMs = null;
-    this.timerDataOneThroughTen.startTimeMs = null;
   }
 
   @Mutation
@@ -76,7 +72,6 @@ export default class SeededGame extends VuexModule implements GameState {
     this.timerDataOverall.lastTimeMs = null;
     this.timerDataOverall.startTimeMs = Date.now();
 
-    this.timerDataOneThroughTen.lastTimeMs = null;
   }
 
   @Mutation
@@ -97,9 +92,6 @@ export default class SeededGame extends VuexModule implements GameState {
     if (number == nextNumber) {
       const now = Date.now()
 
-      if (number == 1) {
-        this.timerDataOneThroughTen.startTimeMs = now;
-      }
       gameNumber.clicked = true;
 
       if (this.numbers.every((n) => n.clicked)) {
@@ -107,12 +99,10 @@ export default class SeededGame extends VuexModule implements GameState {
         this.phase = Phase.Inactive;
 
         this.timerDataOverall.recordTime(now);
-        this.timerDataOneThroughTen.recordTime(now);
 
-        window.localStorage.setItem(this.bestTimesKey, JSON.stringify({
-          overall: this.timerDataOverall.times,
-          oneThroughTen: this.timerDataOneThroughTen.times
-        }));
+        // window.localStorage.setItem(this.bestTimesKey, JSON.stringify({
+        //   overall: this.timerDataOverall.times,
+        // }));
       }
     }
   }
@@ -120,27 +110,25 @@ export default class SeededGame extends VuexModule implements GameState {
   @Mutation
   RESET_PROGRESS() {
     this.numbers.forEach(number => number.clicked = false);
-    this.timerDataOneThroughTen.startTimeMs = null;
   }
 
-  get nextNumber(): number {
-    const highestNumberSoFar = Math.max(0,
-      ...(this.numbers
-        .filter((n) => n.clicked)
-        .map(n => n.number)))
-    return highestNumberSoFar + 1;
-  }
+  // get nextNumber(): number {
+  //   const highestNumberSoFar = Math.max(0,
+  //     ...(this.numbers
+  //       .filter((n) => n.clicked)
+  //       .map(n => n.number)))
+  //   return highestNumberSoFar + 1;
+  // }
 
-  get timerDataForTimerType(): (timerType: TimerType) => TimerData {
-    return (timerType: TimerType) => {
-      switch (timerType) {
-        case TimerType.Overall: return this.timerDataOverall;
-        case TimerType.OneThroughTen: return this.timerDataOneThroughTen;
-        default:
-          throw `timerDataForTimerType(): Unrecognized TimerType: ${timerType}`;
-      }
-    }
-  }
+  // get timerDataForTimerType(): (timerType: TimerType) => TimerData {
+  //   return (timerType: TimerType) => {
+  //     switch (timerType) {
+  //       case TimerType.Overall: return this.timerDataOverall;
+  //       default:
+  //         throw `timerDataForTimerType(): Unrecognized TimerType: ${timerType}`;
+  //     }
+  //   }
+  // }
 }
 
 export const SeededGameModule = getModule(SeededGame);

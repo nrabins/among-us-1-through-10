@@ -41,9 +41,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import GameButton from '@/components/game/single/GameButton.vue';
+import GameButton from '@/components/game/shared/GameButton.vue';
 
-import { GameModule } from '@/store/modules/game/single';
+import { SingleGameModule } from '@/store/modules/game/single';
 import { Phase } from '@/store/modules/game/shared/types';
 
 import { SettingsModule } from '@/store/modules/settings';
@@ -53,7 +53,7 @@ import { SettingsModule } from '@/store/modules/settings';
     GameButton,
   },
 })
-export default class GameBoard extends Vue {
+export default class SingleGameBoard extends Vue {
 
   blinkInterval: number | null = null;
   isBlinking = false;
@@ -63,35 +63,35 @@ export default class GameBoard extends Vue {
   }
 
   get firstRow() {
-    return GameModule.numbers.slice(0, 5);
+    return SingleGameModule.numbers.slice(0, 5);
   }
 
   get secondRow() {
-    return GameModule.numbers.slice(5);
+    return SingleGameModule.numbers.slice(5);
   }
 
   get showNewGameOverlay() {
-    return GameModule.phase == Phase.Inactive;
+    return SingleGameModule.phase == Phase.Inactive;
   }
 
   newGame(): void {
-    GameModule.NEW_GAME();
+    SingleGameModule.NEW_GAME();
   }
 
   handleClick(number: number): void {
-    if (this.isAnimating || GameModule.phase == Phase.Inactive) {
+    if (this.isAnimating || SingleGameModule.phase == Phase.Inactive) {
       return;
     }
 
-    if (number != GameModule.nextNumber) {
+    if (number != SingleGameModule.nextNumber) {
       if (SettingsModule.gameSettings.newGameOnMistake) {
-        this.animateError(GameModule.SET_INACTIVE);
+        this.animateError(SingleGameModule.SET_INACTIVE);
       } else {
-        GameModule.RESET_PROGRESS();
+        SingleGameModule.RESET_PROGRESS();
         this.animateError();
       }
     } else {
-      GameModule.CLICK_NUMBER(number);
+      SingleGameModule.CLICK_NUMBER(number);
     }
   }
 
@@ -124,9 +124,6 @@ export default class GameBoard extends Vue {
 
 <style lang="scss" scoped>
 .gameboard {
-  // height: 26.9vh;
-  // width: 39vw;
-
   background-color: #033cd1;
   border: 0.1vw solid #7f8eb7;
 }

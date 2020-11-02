@@ -8,10 +8,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import AmongUsGame from "@/components/game/single/AmongUsGame.vue";
+import AmongUsGame from "@/components/game/shared/AmongUsGame.vue";
 import SettingsModal from "@/components/shared/SettingsModal.vue";
 import AboutModal from "@/components/shared/AboutModal.vue";
-import { GameModule } from "@/store/modules/game/single";
+
+import { SingleGameModule } from "@/store/modules/game/single";
 import { SettingsModule } from "@/store/modules/settings";
 
 @Component({
@@ -23,7 +24,7 @@ import { SettingsModule } from "@/store/modules/settings";
 })
 export default class App extends Vue {
   created() {
-    GameModule.LOAD_DATA();
+    SingleGameModule.LOAD_DATA();
     SettingsModule.LOAD_GAME_SETTINGS();
   }
 

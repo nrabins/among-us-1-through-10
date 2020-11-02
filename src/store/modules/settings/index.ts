@@ -1,6 +1,6 @@
 import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators';
 import store from '@/store'
-import { SettingsState, GameSettings } from './types';
+import { SettingsState, GameSettings, GameMode } from './types';
 
 @Module({ dynamic: true, store, name: 'settings' })
 export default class Settings extends VuexModule implements SettingsState {
@@ -10,7 +10,7 @@ export default class Settings extends VuexModule implements SettingsState {
 
   gameSettings: GameSettings = {
     newGameOnMistake: false,
-    isSeeded: false
+    gameMode: GameMode.Seeded
   }
 
   private readonly settingsKey = "Settings";
@@ -50,7 +50,8 @@ export default class Settings extends VuexModule implements SettingsState {
       return;
     }
 
-    this.gameSettings = JSON.parse(settingsStr) as GameSettings;
+    const loadedSettings = JSON.parse(settingsStr) as GameSettings;
+    this.gameSettings = Object.assign(this.gameSettings, loadedSettings);
   }
 
 }

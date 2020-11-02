@@ -1,14 +1,9 @@
 <template>
   <div class="container">
-    <div class="game-board-and-source">
-      <GameBoard />
-    </div>
+    <GameBoard />
 
     <div class="meta">
-      <div class="scoreboards">
-        <GameScoreboard title="Overall" :timerType="1" :now="now" />
-        <GameScoreboard title="1-10" :timerType="2" :now="now" />
-      </div>
+      <ScoreBoards />
       <div class="settings-container">
         <button class="settings-button" @click="showSettings">
           ⚙ Settings
@@ -22,28 +17,17 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import GameBoard from "@/components/game/single/GameBoard.vue";
-import GameScoreboard from "@/components/game/single/GameScoreboard.vue";
+import GameBoard from "@/components/game/shared/GameBoard.vue";
+import ScoreBoards from "@/components/game/shared/ScoreBoards.vue";
 import { SettingsModule } from "@/store/modules/settings";
 
 @Component({
   components: {
     GameBoard,
-    GameScoreboard,
+    ScoreBoards,
   },
 })
 export default class AmongUsGame extends Vue {
-  now = Date.now();
-
-  private readonly nowIntervalMs = 11;
-  private nowIntervalHandle!: number;
-
-  mounted() {
-    this.nowIntervalHandle = setInterval(() => {
-      this.now = Date.now();
-    }, this.nowIntervalMs);
-  }
-
   showSettings() {
     SettingsModule.SHOW_SETTINGS();
   }
@@ -64,40 +48,12 @@ $button-color-hover: lighten($button-color, 7%);
   align-items: center;
 }
 
-.game-board-and-source {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  a {
-    font-size: 0.8vw;
-    color: white;
-
-    margin-top: 1.5vw;
-  }
-}
 
 .meta {
   margin-left: 2vw;
   display: flex;
   flex-direction: column;
 
-  .scoreboards {
-    border-radius: 1vw;
-    border: 0.2vw solid black;
-    background-color: rgba(0, 0, 0, 0.308);
-    color: rgba(255, 255, 255, 0.801);
-
-    > *:first-child {
-      border-right: 0.1vw solid black;
-    }
-
-    margin-bottom: 1vw;
-
-    > * {
-      display: inline-block;
-    }
-  }
 
   $pill-border-radius: 1vw;
 
