@@ -3,7 +3,7 @@ import store from '@/store'
 import { Phase, GameNumber} from '../shared/types';
 import { SingleGameState, TimerData, TimerDataImp, TimerType } from './types';
 
-@Module({ dynamic: true, store, name: 'single' })
+@Module({ dynamic: true, namespaced: true, store, name: 'single' })
 export default class SingleGame extends VuexModule implements SingleGameState {
   phase = Phase.Inactive;
   numbers = [] as GameNumber[];

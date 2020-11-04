@@ -1,25 +1,33 @@
-import { dummyData } from './data';
-import { Module, VuexModule, getModule, Mutation } from 'vuex-module-decorators';
+import { getSeededTrials } from './data';
+import { Module, VuexModule, getModule, Mutation, Action } from 'vuex-module-decorators';
 import store from '@/store'
-import { SeededGameState, TimerData, TimerDataImp, TimerType } from './types';
+import { SeededGameState, TimerDataImp, TimerType, isValidSeed, isValidNumberOfTrials } from './types';
 import { GameNumber, Phase } from '../shared/types';
 
-@Module({ dynamic: true, store, name: 'seeded' })
+@Module({ dynamic: true, namespaced: true, store, name: 'seeded' })
 export default class SeededGame extends VuexModule implements SeededGameState {
+  private readonly defaultSeed = { seed: "Ogbomosho", numberOfTrials: 10 };
   phase = Phase.Inactive;
-  numbers = [] as GameNumber[];
   timerDataOverall = new TimerDataImp(TimerType.Overall)
-  
-  isSeededRun = true;
-  seededRunActiveIndex = 0;
-  seededRunTrials = dummyData;
 
-  private readonly bestTimesKey = "BestTimes";
+  seed = this.defaultSeed.seed;
+  numberOfTrials = this.defaultSeed.numberOfTrials;
+
+  currentTrialIndex = 0;
+  trials = [] as GameNumber[][];
+
+  nextNumber = 1;
+
+  hasCompletedTrial = false;
+
+  private readonly bestTimesKey = "SeededBestTimes";
+  private readonly lastSeedKey = "LastSeed";
 
   constructor(module: SeededGame) {
     super(module);
+    this.trials = [[]] as GameNumber[][];
     for (let i = 1; i <= 10; i++) {
-      this.numbers.push({
+      this.trials[0].push({
         number: i,
         clicked: false
       })
@@ -27,108 +35,151 @@ export default class SeededGame extends VuexModule implements SeededGameState {
   }
 
   @Mutation
-  LOAD_DATA() {
+  SET_SEED(payload: { seed: string; numberOfTrials: number }) {
+    payload.seed = payload.seed.toUpperCase().trim();
+
+    if (!isValidSeed(payload.seed)) {
+      payload.seed = this.defaultSeed.seed
+    }
+
+    if (!isValidNumberOfTrials(payload.numberOfTrials)) {
+      payload.numberOfTrials = this.defaultSeed.numberOfTrials;
+    }
+
+    this.seed = payload.seed;
+    this.numberOfTrials = payload.numberOfTrials;
+    this.hasCompletedTrial = false;
+
+    window.localStorage.setItem(this.lastSeedKey, JSON.stringify({ seed: this.seed, numberOfTrials: this.numberOfTrials }))
+  }
+
+  @Mutation
+  LOAD_SEED() {
+    let seed = { ... this.defaultSeed };
+
+    const localStorageSeedStr = window.localStorage.getItem(this.lastSeedKey);
+    if (localStorageSeedStr) {
+      const localStorageSeed = JSON.parse(localStorageSeedStr) as { seed: string; numberOfTrials: number };
+      if (isValidSeed(localStorageSeed.seed) && isValidNumberOfTrials(localStorageSeed.numberOfTrials)) {
+        seed = localStorageSeed;
+      }
+    }
+
+    this.seed = seed.seed;
+    this.numberOfTrials = seed.numberOfTrials;
+  }
+
+  @Mutation
+  LOAD_SEEDED_BEST_TIMES() {
     const dataStr = window.localStorage.getItem(this.bestTimesKey);
     if (dataStr === null) {
       return;
     }
 
     const data = JSON.parse(dataStr) as {
-      overall: Array<number | null>;
-      oneThroughTen: Array<number | null>;
+      overall: TimerDataImp;
     };
 
-    this.timerDataOverall.times = data.overall;
+    this.timerDataOverall.seededTimes = data.overall.seededTimes;
   }
 
   @Mutation
   RESET_DATA() {
     window.localStorage.removeItem(this.bestTimesKey);
-    this.timerDataOverall.times = [null, null, null, null, null];
+    this.timerDataOverall.seededTimes = [];
+    this.seed = this.defaultSeed.seed;
+    this.numberOfTrials = this.defaultSeed.numberOfTrials;
+    localStorage.removeItem(this.lastSeedKey);
   }
 
   @Mutation
-  SET_INACTIVE() {
+  NEW_GAME() {
     this.phase = Phase.Inactive;
+
+    this.trials = getSeededTrials(this.numberOfTrials, this.seed)
+      .map(trial => trial.map(number => ({
+        number,
+        clicked: false
+      })));
+    this.nextNumber = 1;
+    this.currentTrialIndex = 0;
+
     this.timerDataOverall.lastTimeMs = null;
     this.timerDataOverall.startTimeMs = null;
   }
 
   @Mutation
-  NEW_GAME() {
-    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    for (let i = numbers.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-    }
-
-    this.numbers = numbers.map((i) => ({
-      number: i,
-      clicked: false,
-    }));
-
+  START_GAME() {
     this.phase = Phase.Active;
-
     this.timerDataOverall.lastTimeMs = null;
     this.timerDataOverall.startTimeMs = Date.now();
-
   }
 
   @Mutation
   CLICK_NUMBER(number: number) {
-    const gameNumber = this.numbers.find((x) => x.number == number);
+    const currentTrial = this.trials[this.currentTrialIndex];
+    if (!currentTrial) {
+      throw `No trial for index ${this.currentTrialIndex}`
+    }
+    const gameNumber = currentTrial.find((x) => x.number == number);
 
     if (!gameNumber) {
       return;
     }
 
-    // Unfortunately we have to duplicate this logic since (AFAIK)
-    // it's not possible to call getters from mutations
-    const nextNumber = Math.max(0,
-      ...(this.numbers
-        .filter((n) => n.clicked)
-        .map(n => n.number))) + 1
+    if (number == this.nextNumber) {
 
-    if (number == nextNumber) {
-      const now = Date.now()
-
+      this.nextNumber++;
       gameNumber.clicked = true;
 
-      if (this.numbers.every((n) => n.clicked)) {
-        // Game-over handling
-        this.phase = Phase.Inactive;
+      if (currentTrial.every((n) => n.clicked)) {
+        // Trial is complete
+        if (this.currentTrialIndex == this.trials.length - 1) {
+          // This was the last trial, game over logic
+          this.phase = Phase.Inactive;
+          this.hasCompletedTrial = true;
 
-        this.timerDataOverall.recordTime(now);
-
-        // window.localStorage.setItem(this.bestTimesKey, JSON.stringify({
-        //   overall: this.timerDataOverall.times,
-        // }));
+          this.timerDataOverall.recordTime(Date.now(), this.seed, this.numberOfTrials);
+          window.localStorage.setItem(this.bestTimesKey, JSON.stringify({
+            overall: this.timerDataOverall,
+          }));
+        } else {
+          this.currentTrialIndex++;
+          this.nextNumber = 1;
+        }
       }
     }
   }
 
-  @Mutation
-  RESET_PROGRESS() {
-    this.numbers.forEach(number => number.clicked = false);
+  get currentTrial(): GameNumber[] {
+    const currentTrial = this.trials[this.currentTrialIndex];
+    if (!currentTrial) {
+      throw `currentTrial(): No trial for index ${this.currentTrialIndex}`;
+    }
+    return currentTrial;
   }
 
-  // get nextNumber(): number {
-  //   const highestNumberSoFar = Math.max(0,
-  //     ...(this.numbers
-  //       .filter((n) => n.clicked)
-  //       .map(n => n.number)))
-  //   return highestNumberSoFar + 1;
-  // }
+  @Mutation
+  RESET_PROGRESS() {
+    const currentTrial = this.trials[this.currentTrialIndex];
+    if (!currentTrial) {
+      throw `No trial for index ${this.currentTrialIndex}`
+    }
+    currentTrial.forEach(number => number.clicked = false);
+    this.nextNumber = 1;
+  }
 
-  // get timerDataForTimerType(): (timerType: TimerType) => TimerData {
-  //   return (timerType: TimerType) => {
-  //     switch (timerType) {
-  //       case TimerType.Overall: return this.timerDataOverall;
-  //       default:
-  //         throw `timerDataForTimerType(): Unrecognized TimerType: ${timerType}`;
-  //     }
-  //   }
-  // }
+  @Action
+  loadData() {
+    this.context.commit('LOAD_SEED');
+    this.context.commit('LOAD_SEEDED_BEST_TIMES');
+  }
+
+  @Action
+  setSeed(payload: { seed: string; numberOfTrials: number }) {
+    this.context.commit('SET_SEED', payload);
+    this.context.commit('NEW_GAME');
+  }
 }
 
 export const SeededGameModule = getModule(SeededGame);

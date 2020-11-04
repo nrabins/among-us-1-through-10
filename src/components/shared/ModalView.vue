@@ -3,8 +3,8 @@
     <div class="modal-overlay" @click="$emit('close')" />
     <div class="modal-content">
       <div class="close-button noselect" @click="$emit('close')">✕</div>
-      <h1>
-        <slot name="title" class="title">Modal</slot>
+      <h1 class="title">
+        <slot name="title">Modal</slot>
       </h1>
       <div class="body">
         <slot>
@@ -21,6 +21,9 @@
           </p>
         </slot>
       </div>
+      <div class="actions" v-if="hasActions">
+        <slot name="actions" />
+      </div>
     </div>
   </div>
 </template>
@@ -29,10 +32,19 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ModalView extends Vue {}
+export default class ModalView extends Vue {
+  get hasActions() {
+    return !!this.$slots.actions;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+
+.secondary {
+  background-color: rgba(0, 0, 0, 0.363);
+}
+
 .modal-container {
   position: absolute;
   top: 0;
@@ -85,7 +97,7 @@ export default class ModalView extends Vue {}
       }
     }
 
-    h1 {
+    .title {
       padding: 0 0 1rem 0;
       border-bottom: 0.1vw solid rgb(155, 155, 155);
       font-size: 1.5rem;
@@ -93,6 +105,18 @@ export default class ModalView extends Vue {}
 
     .body {
       margin-top: 1rem;
+    }
+
+    .actions {
+      border-top: 0.1vw solid rgb(155, 155, 155);
+      padding-top: 1rem;
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+
+      > *:not(:last-child) {
+        margin-right: 1rem;
+      }
     }
   }
 }

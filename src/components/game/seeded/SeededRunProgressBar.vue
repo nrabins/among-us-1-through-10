@@ -5,32 +5,65 @@
       v-for="i in total"
       :key="i"
       :class="{
-        completed: i < activeIndex,
-        active: i == activeIndex,
-        uncompleted: i > activeIndex,
+        completed: isCompleted(i),
+        active: isActive(i),
+        uncompleted: isUncompleted(i),
       }"
-    >{{ i }}</div>
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { SeededGameModule } from '@/store/modules/game/seeded';
-import { Component, Vue } from "vue-property-decorator";
+import { Phase } from '@/store/modules/game/shared/types';
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class SeededRunProgressBar extends Vue {
   get activeIndex() {
-    return SeededGameModule.seededRunActiveIndex;
+    return SeededGameModule.currentTrialIndex + 1;
   }
 
   get total() {
-    return SeededGameModule.seededRunTrials.length;
+    return SeededGameModule.trials.length;
+  }
+
+  isCompleted(i: number): boolean {
+    switch (SeededGameModule.phase) {
+      case Phase.Active:
+        return i < this.activeIndex;
+      case Phase.Inactive:
+        return SeededGameModule.hasCompletedTrial;
+      default:
+        throw `isCompleted(): Unrecognized phase ${SeededGameModule.phase}`;
+    }
+  }
+
+  isActive(i: number): boolean {
+    switch (SeededGameModule.phase) {
+      case Phase.Active:
+        return i == this.activeIndex;
+      case Phase.Inactive:
+        return false;
+      default:
+        throw `isActive(): Unrecognized phase ${SeededGameModule.phase}`;
+    }
+  }
+
+  isUncompleted(i: number): boolean {
+    switch (SeededGameModule.phase) {
+      case Phase.Active:
+        return i > this.activeIndex;
+      case Phase.Inactive:
+        return !SeededGameModule.hasCompletedTrial;
+      default:
+        throw `isUncompleted(): Unrecognized phase ${SeededGameModule.phase}`;
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 $border-radius: 1vw;
 
 .progress-bar {

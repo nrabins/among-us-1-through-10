@@ -27,7 +27,11 @@
         inspiration
       </li>
       <li>Thanks to the many Jorblings for testing and ideas</li>
+      <li>Thanks to <a href="http://www.innersloth.com/">InnerSloth</a> for making and maintaining Among Us</li>
     </ul>
+    <template #actions>
+      <button @click="$emit('close')">Close</button>
+    </template>
   </ModalView>
 </template>
 
@@ -78,5 +82,21 @@ h2 {
 em {
   font-style: normal;
   font-weight: bold;
+}
+
+button {
+  background: linear-gradient(to top left, #3a74d3, #4286f4);
+  color: #eee;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid #eee;
+  border-radius: 2px;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(to top left, #285cb1, #2b68ca);
+  }
 }
 </style>

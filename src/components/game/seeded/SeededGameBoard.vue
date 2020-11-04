@@ -7,8 +7,8 @@
             <div class="border-1">
               <div
                 class="new-game-overlay noselect"
-                v-show="showNewGameOverlay"
-                @click="newGame"
+                v-show="isInactive"
+                @click="startGame"
               >
                 CLICK TO START
               </div>
@@ -39,26 +39,33 @@
       </div>
     </div>
     <SeededRunProgressBar />
+    <div class="about-seeded-runs" @click="seededInfoShowing = true">
+      About Seeded Runs
+    </div>
+    <SeededInfoModal v-if="seededInfoShowing" @close="seededInfoShowing = false" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import GameButton from "@/components/game/shared/GameButton.vue";
-import SeededRunProgressBar from '@/components/game/seeded/SeededRunProgressBar.vue'
+import { Component, Vue } from 'vue-property-decorator';
+import GameButton from '@/components/game/shared/GameButton.vue';
+import SeededRunProgressBar from '@/components/game/seeded/SeededRunProgressBar.vue';
+import SeededInfoModal from '@/components/game/seeded/SeededInfoModal.vue';
 
-import { SingleGameModule } from "@/store/modules/game/single";
-import { Phase } from "@/store/modules/game/shared/types";
-
-import { SettingsModule } from "@/store/modules/settings";
+import { SeededGameModule } from '@/store/modules/game/seeded';
+import { GameNumber, Phase } from '@/store/modules/game/shared/types';
+import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
     GameButton,
     SeededRunProgressBar,
+    SeededInfoModal
   },
 })
 export default class SeededGameBoard extends Vue {
+  seededInfoShowing = false;
+
   blinkInterval: number | null = null;
   isBlinking = false;
 
@@ -66,37 +73,47 @@ export default class SeededGameBoard extends Vue {
     return this.blinkInterval !== null;
   }
 
+  get currentTrial(): GameNumber[] {
+    if (this.isInactive && !SeededGameModule.hasCompletedTrial) {
+      return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => ({
+        number: i,
+        clicked: false,
+      }));
+    }
+    return SeededGameModule.currentTrial;
+  }
+
   get firstRow() {
-    return SingleGameModule.numbers.slice(0, 5);
+    return this.currentTrial.slice(0, 5);
   }
 
   get secondRow() {
-    return SingleGameModule.numbers.slice(5);
+    return this.currentTrial.slice(5);
   }
 
-  get showNewGameOverlay() {
-    return SingleGameModule.phase == Phase.Inactive;
+  get isInactive() {
+    return SeededGameModule.phase == Phase.Inactive;
   }
 
-  newGame(): void {
-    SingleGameModule.NEW_GAME();
+  startGame(): void {
+    SeededGameModule.NEW_GAME();
+    SeededGameModule.START_GAME();
   }
 
   handleClick(number: number): void {
-    console.log("clicked in seeded");
-    if (this.isAnimating || SingleGameModule.phase == Phase.Inactive) {
+    if (this.isAnimating || SeededGameModule.phase == Phase.Inactive) {
       return;
     }
 
-    if (number != SingleGameModule.nextNumber) {
-      if (SettingsModule.gameSettings.newGameOnMistake) {
-        this.animateError(SingleGameModule.SET_INACTIVE);
+    if (number != SeededGameModule.nextNumber) {
+      if (SettingsModule.gameSettings.newGameOnMistakeSeeded) {
+        this.animateError(SeededGameModule.NEW_GAME);
       } else {
-        SingleGameModule.RESET_PROGRESS();
+        SeededGameModule.RESET_PROGRESS();
         this.animateError();
       }
     } else {
-      SingleGameModule.CLICK_NUMBER(number);
+      SeededGameModule.CLICK_NUMBER(number);
     }
   }
 
@@ -223,5 +240,17 @@ $band-4-end: 80%;
   z-index: 2;
 
   pointer-events: none;
+}
+
+.about-seeded-runs {
+  margin-top: 0.8vw;
+  font-size: 0.7vw;
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgb(192, 192, 192);
+  }
 }
 </style>

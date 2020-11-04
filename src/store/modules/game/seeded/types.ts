@@ -1,34 +1,31 @@
-import { GameNumber } from '../shared/types';
+import { GameNumber, Phase } from '../shared/types';
 
 export interface SeededGameState {
   phase: Phase;
-  numbers: GameNumber[];
   timerDataOverall: TimerData;
+  trials: GameNumber[][];
 }
 
-export enum Phase {
-  Inactive = 1,
-  Active
-}
 
 export interface TimerData {
   timerType: TimerType;
   startTimeMs: number | null;
   lastTimeMs: number | null;
-  times: Array<number|null>;
+  seededTimes: Array<SeededTimeRecord>;
 
-  recordTime(timeMs: number): void;
+  recordTime(timeMs: number, seed: string, numberOfTrials: number): void;
 }
 
 export class TimerDataImp implements TimerData {
-  times: Array<number|null> = [null, null, null, null, null];
   startTimeMs: number | null = null;
   lastTimeMs: number | null = null;
+
+  seededTimes = [] as Array<SeededTimeRecord>;
 
   constructor(public timerType: TimerType) {
   }
 
-  recordTime(now: number): void {
+  recordTime(now: number, seed: string, numberOfTrials: number): void {
     if (!this.startTimeMs) {
       throw "recordTime(): startTimeMs is null"
     }
@@ -37,8 +34,18 @@ export class TimerDataImp implements TimerData {
     this.lastTimeMs = elapsedTimeMs;
     this.startTimeMs = null;
 
-    this.times.push(elapsedTimeMs);
-    this.times.sort((a, b) => {
+    let timesForSeed = this.seededTimes.find(st => st.seed == seed && st.numberOfTrials == numberOfTrials)
+    if (!timesForSeed) {
+      timesForSeed = {
+        seed,
+        numberOfTrials,
+        times: [null, null, null, null, null]
+      }
+      this.seededTimes.push(timesForSeed);
+    }
+
+    timesForSeed.times.push(elapsedTimeMs);
+    timesForSeed.times.sort((a, b) => {
       if (a == null) {
         return 1;
       } else if (b == null) {
@@ -47,10 +54,25 @@ export class TimerDataImp implements TimerData {
         return a - b;
       }
     });
-    this.times = this.times.slice(0, 5);
+    timesForSeed.times = timesForSeed.times.slice(0, 5);
   }
 }
 
 export enum TimerType {
   Overall = 1,
+}
+
+export interface SeededTimeRecord {
+  seed: string;
+  numberOfTrials: number;
+  times: Array<number | null>;
+}
+
+// Utility
+export const isValidSeed = (seed: string) => {
+  return seed.length > 0 && seed.length <= 10;
+}
+
+export const isValidNumberOfTrials = (numberOfTrials: number) => {
+  return numberOfTrials >= 2 && numberOfTrials <= 100
 }

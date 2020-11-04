@@ -4,13 +4,17 @@ import { SettingsState, GameSettings, GameMode } from './types';
 
 @Module({ dynamic: true, store, name: 'settings' })
 export default class Settings extends VuexModule implements SettingsState {
-  version = "1.1.0";
+
+
+  version = "1.2.0";
   isShowingSettings = false;
   isShowingAbout = false;
+  isShowingSeedDialog = false;
 
   gameSettings: GameSettings = {
-    newGameOnMistake: false,
-    gameMode: GameMode.Seeded
+    newGameOnMistakeSingle: false,
+    newGameOnMistakeSeeded: false,
+    gameMode: GameMode.Single
   }
 
   private readonly settingsKey = "Settings";
@@ -19,6 +23,7 @@ export default class Settings extends VuexModule implements SettingsState {
   SHOW_SETTINGS() {
     this.isShowingSettings = true;
     this.isShowingAbout = false;
+    this.isShowingSeedDialog = false;
   }
 
   @Mutation
@@ -30,11 +35,24 @@ export default class Settings extends VuexModule implements SettingsState {
   SHOW_ABOUT() {
     this.isShowingAbout = true;
     this.isShowingSettings = false;
+    this.isShowingSeedDialog = false;
   }
 
   @Mutation
   HIDE_ABOUT() {
     this.isShowingAbout = false;
+  }
+
+  @Mutation
+  SHOW_SEED_DIALOG() {
+    this.isShowingSeedDialog = true;
+    this.isShowingSettings = false;
+    this.isShowingAbout = false;
+  }
+
+  @Mutation
+  HIDE_SEED_DIALOG() {
+    this.isShowingSeedDialog = false;
   }
 
   @Mutation
@@ -52,6 +70,12 @@ export default class Settings extends VuexModule implements SettingsState {
 
     const loadedSettings = JSON.parse(settingsStr) as GameSettings;
     this.gameSettings = Object.assign(this.gameSettings, loadedSettings);
+  }
+
+  @Mutation
+  SET_GAME_MODE(gameMode: GameMode) {
+    this.gameSettings.gameMode = gameMode;
+    window.localStorage.setItem(this.settingsKey, JSON.stringify(this.gameSettings));
   }
 
 }

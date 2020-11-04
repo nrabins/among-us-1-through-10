@@ -4,13 +4,27 @@
     <div class="checkbox">
       <input
         type="checkbox"
-        id="newGameOnSave"
-        v-model="gameSettings.newGameOnMistake"
+        id="newGameOnMistakeSingle"
+        v-model="gameSettings.newGameOnMistakeSingle"
         @change="onSettingChanged"
       />
-      <label for="newGameOnSave">New Game on Mistake</label>
+      <label for="newGameOnMistakeSingle">New Game on Mistake (Single)</label>
     </div>
-    <button class="reset" @click="resetData">Reset Data</button>
+    <div class="checkbox">
+      <input
+        type="checkbox"
+        id="newGameOnMistakeSeeded"
+        v-model="gameSettings.newGameOnMistakeSeeded"
+        @change="onSettingChanged"
+      />
+      <label for="newGameOnMistakeSeeded"
+        >New Game on Mistake (Seeded Run)</label
+      >
+    </div>
+    <template #actions>
+      <button class="reset" @click="resetData">Reset Data</button>
+      <button @click="close">Close</button>
+    </template>
   </ModalView>
 </template>
 
@@ -21,6 +35,7 @@ import ModalView from '@/components/shared/ModalView.vue';
 import { SingleGameModule } from '@/store/modules/game/single';
 import { SettingsModule } from '@/store/modules/settings';
 import { GameMode, GameSettings } from '@/store/modules/settings/types';
+import { SeededGameModule } from '@/store/modules/game/seeded';
 
 @Component({
   components: {
@@ -29,8 +44,9 @@ import { GameMode, GameSettings } from '@/store/modules/settings/types';
 })
 export default class SettingsModal extends Vue {
   gameSettings: GameSettings = {
-    newGameOnMistake: false,
-    gameMode: GameMode.Single
+    newGameOnMistakeSingle: false,
+    newGameOnMistakeSeeded: false,
+    gameMode: GameMode.Single,
   };
 
   created() {
@@ -44,7 +60,12 @@ export default class SettingsModal extends Vue {
   resetData(): void {
     if (window.confirm('Reset all data?\nThis cannot be undone.')) {
       SingleGameModule.RESET_DATA();
+      SeededGameModule.RESET_DATA();
     }
+  }
+
+  close() {
+    SettingsModule.HIDE_SETTINGS();
   }
 }
 </script>
@@ -65,7 +86,7 @@ export default class SettingsModal extends Vue {
 }
 
 button {
-  background-color: rgba(60, 69, 202, 0.74);
+  background: linear-gradient(to top left, #3a74d3, #4286f4);
   color: #eee;
   padding: 0.8rem 1.6rem;
   border: 1px solid #eee;
@@ -76,7 +97,7 @@ button {
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(85, 95, 231, 0.74);
+    background: linear-gradient(to top left, #285cb1, #2b68ca);
   }
 }
 </style>

@@ -5,7 +5,8 @@ export interface SettingsState {
 }
 
 export interface GameSettings {
-  newGameOnMistake: boolean;
+  newGameOnMistakeSingle: boolean;
+  newGameOnMistakeSeeded: boolean;
   gameMode: GameMode;
 }
 

@@ -84,7 +84,7 @@ export default class SingleGameBoard extends Vue {
     }
 
     if (number != SingleGameModule.nextNumber) {
-      if (SettingsModule.gameSettings.newGameOnMistake) {
+      if (SettingsModule.gameSettings.newGameOnMistakeSingle) {
         this.animateError(SingleGameModule.SET_INACTIVE);
       } else {
         SingleGameModule.RESET_PROGRESS();

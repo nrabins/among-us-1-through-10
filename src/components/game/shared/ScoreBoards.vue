@@ -1,28 +1,28 @@
 <template>
   <div class="scoreboards">
     <template v-if="isSingle">
-      <SingleGameScoreboard title="Overall" :timerType="1" :now="now" />
-      <SingleGameScoreboard title="1-10" :timerType="2" :now="now" />
+      <SingleGameScoreboard :timerType="1" :now="now" />
+      <SingleGameScoreboard :timerType="2" :now="now" />
     </template>
     <template v-else-if="isSeeded">
-      Seeded scoreboard!
+      <SeededGameScoreboard :now="now" />
     </template>
-    <template v-else>
-      Missing scoreboard for current game mode
-    </template>
+    <template v-else> Missing scoreboard for current game mode </template>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 
-import SingleGameScoreboard from "@/components/game/single/SingleGameScoreboard.vue";
+import SingleGameScoreboard from '@/components/game/single/SingleGameScoreboard.vue';
+import SeededGameScoreboard from '@/components/game/seeded/SeededGameScoreboard.vue';
 import { GameMode } from '@/store/modules/settings/types';
 import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
     SingleGameScoreboard,
+    SeededGameScoreboard,
   },
 })
 export default class extends Vue {
@@ -58,11 +58,13 @@ export default class extends Vue {
   background-color: rgba(0, 0, 0, 0.308);
   color: rgba(255, 255, 255, 0.801);
 
+  display: flex;
+
   > *:first-child {
     border-right: 0.1vw solid black;
   }
 
-  margin-bottom: 1vw;
+  margin: 1vw 0;
 
   > * {
     display: inline-block;

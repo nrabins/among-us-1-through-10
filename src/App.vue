@@ -2,6 +2,8 @@
   <div id="app">
     <SettingsModal v-if="isShowingSettings" @close="hideSettings" />
     <AboutModal v-if="isShowingAbout" @close="hideAbout" />
+    <SeedModal v-if="isShowingSeedDialog" @close="hideSeedDialog" />
+
     <AmongUsGame />
   </div>
 </template>
@@ -11,21 +13,28 @@ import { Component, Vue } from "vue-property-decorator";
 import AmongUsGame from "@/components/game/shared/AmongUsGame.vue";
 import SettingsModal from "@/components/shared/SettingsModal.vue";
 import AboutModal from "@/components/shared/AboutModal.vue";
+import SeedModal from "@/components/shared/SeedModal.vue";
 
 import { SingleGameModule } from "@/store/modules/game/single";
 import { SettingsModule } from "@/store/modules/settings";
+import { SeededGameModule } from './store/modules/game/seeded';
 
 @Component({
   components: {
     AmongUsGame,
     SettingsModal,
     AboutModal,
+    SeedModal,
   },
 })
 export default class App extends Vue {
   created() {
-    SingleGameModule.LOAD_DATA();
     SettingsModule.LOAD_GAME_SETTINGS();
+
+    SingleGameModule.LOAD_DATA();
+    
+    SeededGameModule.loadData();
+    SeededGameModule.NEW_GAME();
   }
 
   get isShowingSettings() {
@@ -36,12 +45,20 @@ export default class App extends Vue {
     return SettingsModule.isShowingAbout;
   }
 
+  get isShowingSeedDialog() {
+    return SettingsModule.isShowingSeedDialog;
+  }
+
   hideSettings() {
     SettingsModule.HIDE_SETTINGS();
   }
 
   hideAbout() {
     SettingsModule.HIDE_ABOUT();
+  }
+
+  hideSeedDialog() {
+    SettingsModule.HIDE_SEED_DIALOG();
   }
 }
 </script>

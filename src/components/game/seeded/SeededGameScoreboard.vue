@@ -1,7 +1,7 @@
 <template>
   <div class="scoreboard">
-    <div class="title">
-      {{ title }}
+    <div class="seed-button" @click="setSeed" tabindex="0">
+      {{ seed }} • {{ numberOfTrials }}
     </div>
     <div class="timer">
       <div v-if="timerRunning">
@@ -27,21 +27,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TimerType } from "@/store/modules/game/single/types";
-import { SingleGameModule } from "@/store/modules/game/single";
+import { SeededGameModule } from '@/store/modules/game/seeded';
+import { SettingsModule } from '@/store/modules/settings';
 
 @Component
-export default class SingleGameScoreboard extends Vue {
-  @Prop({ required: true })
-  public timerType!: TimerType;
-
+export default class SeededGameScoreboard extends Vue {
   @Prop({ required: true })
   public now!: number;
 
   get timerData() {
-    return SingleGameModule.timerDataForTimerType(this.timerType);
+    return SeededGameModule.timerDataOverall;
   }
 
   get elapsedTimeMs(): number | null {
@@ -57,18 +54,21 @@ export default class SingleGameScoreboard extends Vue {
   }
 
   get times() {
-    return this.timerData.times;
+    const timesForSeed = this.timerData.seededTimes.find(
+      (st) => st.seed == this.seed && st.numberOfTrials == this.numberOfTrials
+    );
+    if (!timesForSeed) {
+      return [null, null, null, null, null];
+    }
+    return timesForSeed.times;
   }
 
-  get title() {
-    switch (this.timerType) {
-      case TimerType.Overall:
-        return "Overall";
-      case TimerType.OneThroughTen:
-        return "1-10";
-      default:
-        throw `Unrecognized TimerType in GameScoreboard.title(): ${this.timerType}`;
-    }
+  get seed() {
+    return SeededGameModule.seed;
+  }
+
+  get numberOfTrials() {
+    return SeededGameModule.numberOfTrials;
   }
 
   get timerRunning(): boolean {
@@ -77,6 +77,10 @@ export default class SingleGameScoreboard extends Vue {
 
   get indexOfFirstMatch(): number | null {
     return this.times.indexOf(this.lastTimeMs);
+  }
+
+  setSeed() {
+    SettingsModule.SHOW_SEED_DIALOG();
   }
 }
 </script>
@@ -91,11 +95,20 @@ export default class SingleGameScoreboard extends Vue {
   text-align: center;
   font-size: 1.2vw;
 
-  .title {
+  .seed-button {
     padding: 1vw;
     border-bottom: 0.2vw solid black;
+
+    border-radius: 1vw 1vw 0 0;
+    background: linear-gradient(to top left, #3a74d3, #4286f4);
+    color: white;
     text-transform: uppercase;
     white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(192, 192, 192);
+    }
   }
 
   .timer {
@@ -111,7 +124,7 @@ export default class SingleGameScoreboard extends Vue {
     }
 
     .last-time {
-      color: yellow;
+      color: gold;
     }
 
     margin: 1vw 0;
