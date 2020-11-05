@@ -1,59 +1,70 @@
 <template>
-  <div class="border-5">
-    <div class="border-4">
-      <div class="border-3">
-        <div class="border-2">
-          <div class="border-1">
-            <div
-              class="new-game-overlay noselect"
-              v-show="showNewGameOverlay"
-              @click="newGame"
-            >
-              CLICK TO START
-            </div>
-            <div class="reflections" />
-            <div class="gameboard">
-              <div class="offset-bottom-margin">
-                <GameButton
-                  @click="handleClick(i.number)"
-                  v-for="i in firstRow"
-                  :number="i"
-                  :isBlinking="isBlinking"
-                  :key="i.number"
-                />
+  <div>
+    <div class="border-5">
+      <div class="border-4">
+        <div class="border-3">
+          <div class="border-2">
+            <div class="border-1">
+              <div
+                class="new-game-overlay noselect"
+                v-show="isInactive"
+                @click="startGame"
+              >
+                CLICK TO START
               </div>
-              <div>
-                <GameButton
-                  @click="handleClick(i.number)"
-                  v-for="i in secondRow"
-                  :number="i"
-                  :isBlinking="isBlinking"
-                  :key="i.number"
-                />
+              <div class="reflections" />
+              <div class="gameboard">
+                <div class="offset-bottom-margin">
+                  <GameButton
+                    @click="handleClick(i.number)"
+                    v-for="i in firstRow"
+                    :number="i"
+                    :isBlinking="isBlinking"
+                    :key="i.number"
+                  />
+                </div>
+                <div>
+                  <GameButton
+                    @click="handleClick(i.number)"
+                    v-for="i in secondRow"
+                    :number="i"
+                    :isBlinking="isBlinking"
+                    :key="i.number"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <SeededRunProgressBar />
+    <div class="about-seeded-runs" @click="seededInfoShowing = true">
+      About Seeded Runs
+    </div>
+    <SeededInfoModal v-if="seededInfoShowing" @close="seededInfoShowing = false" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import GameButton from '@/components/GameButton.vue';
+import GameButton from '@/components/game/shared/GameButton.vue';
+import SeededRunProgressBar from '@/components/game/seeded/SeededRunProgressBar.vue';
+import SeededInfoModal from '@/components/game/seeded/SeededInfoModal.vue';
 
-import { GameModule } from '@/store/modules/game';
-import { Phase } from '@/store/modules/game/types';
-
+import { SeededGameModule } from '@/store/modules/game/seeded';
+import { GameNumber, Phase } from '@/store/modules/game/shared/types';
 import { SettingsModule } from '@/store/modules/settings';
 
 @Component({
   components: {
     GameButton,
+    SeededRunProgressBar,
+    SeededInfoModal
   },
 })
-export default class GameBoard extends Vue {
+export default class SeededGameBoard extends Vue {
+  seededInfoShowing = false;
 
   blinkInterval: number | null = null;
   isBlinking = false;
@@ -62,36 +73,47 @@ export default class GameBoard extends Vue {
     return this.blinkInterval !== null;
   }
 
+  get currentTrial(): GameNumber[] {
+    if (this.isInactive && !SeededGameModule.hasCompletedTrial) {
+      return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => ({
+        number: i,
+        clicked: false,
+      }));
+    }
+    return SeededGameModule.currentTrial;
+  }
+
   get firstRow() {
-    return GameModule.numbers.slice(0, 5);
+    return this.currentTrial.slice(0, 5);
   }
 
   get secondRow() {
-    return GameModule.numbers.slice(5);
+    return this.currentTrial.slice(5);
   }
 
-  get showNewGameOverlay() {
-    return GameModule.phase == Phase.Inactive;
+  get isInactive() {
+    return SeededGameModule.phase == Phase.Inactive;
   }
 
-  newGame(): void {
-    GameModule.NEW_GAME();
+  startGame(): void {
+    SeededGameModule.NEW_GAME();
+    SeededGameModule.START_GAME();
   }
 
   handleClick(number: number): void {
-    if (this.isAnimating || GameModule.phase == Phase.Inactive) {
+    if (this.isAnimating || SeededGameModule.phase == Phase.Inactive) {
       return;
     }
 
-    if (number != GameModule.nextNumber) {
-      if (SettingsModule.gameSettings.newGameOnMistake) {
-        this.animateError(GameModule.SET_INACTIVE);
+    if (number != SeededGameModule.nextNumber) {
+      if (SettingsModule.gameSettings.newGameOnMistakeSeeded) {
+        this.animateError(SeededGameModule.NEW_GAME);
       } else {
-        GameModule.RESET_PROGRESS();
+        SeededGameModule.RESET_PROGRESS();
         this.animateError();
       }
     } else {
-      GameModule.CLICK_NUMBER(number);
+      SeededGameModule.CLICK_NUMBER(number);
     }
   }
 
@@ -124,9 +146,6 @@ export default class GameBoard extends Vue {
 
 <style lang="scss" scoped>
 .gameboard {
-  // height: 26.9vh;
-  // width: 39vw;
-
   background-color: #033cd1;
   border: 0.1vw solid #7f8eb7;
 }
@@ -221,5 +240,17 @@ $band-4-end: 80%;
   z-index: 2;
 
   pointer-events: none;
+}
+
+.about-seeded-runs {
+  margin-top: 0.8vw;
+  font-size: 0.7vw;
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgb(192, 192, 192);
+  }
 }
 </style>

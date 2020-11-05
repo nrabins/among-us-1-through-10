@@ -20,7 +20,7 @@ export default class GameButton extends Vue {
   public isBlinking!: boolean;
 
   get imageSource() {
-    return require(`./../assets/numbers/${this.number.number}.png`);
+    return require(`./../../../assets/numbers/${this.number.number}.png`);
   }
 
   mouseDown() {
