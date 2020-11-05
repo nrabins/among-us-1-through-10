@@ -1,7 +1,7 @@
 <template>
   <ModalView v-on="$listeners">
     <template #title>
-      <div class="title">
+      <div class="versioned-title">
         <span> About </span>
         <span class="version"> v{{ version }} </span>
       </div>
@@ -55,7 +55,7 @@ export default class AboutModal extends Vue {
 
 <style lang="scss" scoped>
 
-.title {
+.versioned-title {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;

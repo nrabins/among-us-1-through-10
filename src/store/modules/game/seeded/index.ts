@@ -6,7 +6,7 @@ import { GameNumber, Phase } from '../shared/types';
 
 @Module({ dynamic: true, namespaced: true, store, name: 'seeded' })
 export default class SeededGame extends VuexModule implements SeededGameState {
-  private readonly defaultSeed = { seed: "Ogbomosho", numberOfTrials: 10 };
+  private readonly defaultSeed = { seed: "Ogbomosho", numberOfTrials: 5 };
   phase = Phase.Inactive;
   timerDataOverall = new TimerDataImp(TimerType.Overall)
 
