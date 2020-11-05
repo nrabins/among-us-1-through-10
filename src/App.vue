@@ -2,29 +2,39 @@
   <div id="app">
     <SettingsModal v-if="isShowingSettings" @close="hideSettings" />
     <AboutModal v-if="isShowingAbout" @close="hideAbout" />
+    <SeedModal v-if="isShowingSeedDialog" @close="hideSeedDialog" />
+
     <AmongUsGame />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import AmongUsGame from '@/components/AmongUsGame.vue';
-import SettingsModal from '@/components/SettingsModal.vue';
-import AboutModal from '@/components/AboutModal.vue';
-import { GameModule } from '@/store/modules/game';
-import { SettingsModule } from '@/store/modules/settings';
+import { Component, Vue } from "vue-property-decorator";
+import AmongUsGame from "@/components/game/shared/AmongUsGame.vue";
+import SettingsModal from "@/components/shared/SettingsModal.vue";
+import AboutModal from "@/components/shared/AboutModal.vue";
+import SeedModal from "@/components/shared/SeedModal.vue";
+
+import { SingleGameModule } from "@/store/modules/game/single";
+import { SettingsModule } from "@/store/modules/settings";
+import { SeededGameModule } from './store/modules/game/seeded';
 
 @Component({
   components: {
     AmongUsGame,
     SettingsModal,
     AboutModal,
+    SeedModal,
   },
 })
 export default class App extends Vue {
   created() {
-    GameModule.LOAD_DATA();
     SettingsModule.LOAD_GAME_SETTINGS();
+
+    SingleGameModule.LOAD_DATA();
+    
+    SeededGameModule.loadData();
+    SeededGameModule.NEW_GAME();
   }
 
   get isShowingSettings() {
@@ -35,12 +45,20 @@ export default class App extends Vue {
     return SettingsModule.isShowingAbout;
   }
 
+  get isShowingSeedDialog() {
+    return SettingsModule.isShowingSeedDialog;
+  }
+
   hideSettings() {
     SettingsModule.HIDE_SETTINGS();
   }
 
   hideAbout() {
     SettingsModule.HIDE_ABOUT();
+  }
+
+  hideSeedDialog() {
+    SettingsModule.HIDE_SEED_DIALOG();
   }
 }
 </script>
@@ -64,5 +82,15 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

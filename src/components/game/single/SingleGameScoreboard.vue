@@ -29,11 +29,11 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { TimerType } from "@/store/modules/game/types";
-import { GameModule } from "@/store/modules/game";
+import { TimerType } from "@/store/modules/game/single/types";
+import { SingleGameModule } from "@/store/modules/game/single";
 
 @Component
-export default class GameScoreboard extends Vue {
+export default class SingleGameScoreboard extends Vue {
   @Prop({ required: true })
   public timerType!: TimerType;
 
@@ -41,7 +41,7 @@ export default class GameScoreboard extends Vue {
   public now!: number;
 
   get timerData() {
-    return GameModule.timerDataForTimerType(this.timerType);
+    return SingleGameModule.timerDataForTimerType(this.timerType);
   }
 
   get elapsedTimeMs(): number | null {
@@ -83,7 +83,7 @@ export default class GameScoreboard extends Vue {
 
 <style lang="scss" scoped>
 .scoreboard {
-  width: 10vw;
+  min-width: 10vw;
   height: 100%;
   flex-direction: column;
   justify-content: space-between;

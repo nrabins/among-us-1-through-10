@@ -1,18 +1,10 @@
-export interface GameState {
+import { GameNumber, Phase } from '../shared/types';
+
+export interface SingleGameState {
   phase: Phase;
   numbers: GameNumber[];
   timerDataOverall: TimerData;
   timerDataOneThroughTen: TimerData;
-}
-
-export enum Phase {
-  Inactive = 1,
-  Active
-}
-
-export interface GameNumber {
-  number: number;
-  clicked: boolean;
 }
 
 export interface TimerData {
