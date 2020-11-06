@@ -243,8 +243,8 @@ $band-4-end: 80%;
 }
 
 .about-seeded-runs {
-  margin-top: 0.8vw;
-  font-size: 0.7vw;
+  margin-top: 1vw;
+  font-size: 1vw;
   color: white;
   cursor: pointer;
   text-decoration: underline;
