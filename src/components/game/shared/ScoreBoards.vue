@@ -60,8 +60,8 @@ export default class extends Vue {
 
   display: flex;
 
-  > *:first-child {
-    border-right: 0.1vw solid black;
+  > *:not(:first-child) {
+    border-left: 0.1vw solid black;
   }
 
   margin: 1vw 0;

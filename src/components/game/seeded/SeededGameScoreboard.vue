@@ -27,10 +27,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-import { SeededGameModule } from '@/store/modules/game/seeded';
-import { SettingsModule } from '@/store/modules/settings';
+import { SeededGameModule } from "@/store/modules/game/seeded";
+import { SettingsModule } from "@/store/modules/settings";
 
 @Component
 export default class SeededGameScoreboard extends Vue {
@@ -99,7 +99,7 @@ export default class SeededGameScoreboard extends Vue {
     padding: 1vw;
     border-bottom: 0.2vw solid black;
 
-    border-radius: 1vw 1vw 0 0;
+    border-radius: 0.8vw 0.8vw 0 0;
     background: linear-gradient(to top left, #3a74d3, #4286f4);
     color: white;
     text-transform: uppercase;

@@ -70,7 +70,7 @@ $border-radius: 1vw;
   height: 2vw;
   width: 40vw;
 
-  border: 0.1vw solid black;
+  // border: 0.1vw solid black;
   border-top: none;
   border-bottom-left-radius: $border-radius;
   border-bottom-right-radius: $border-radius;
@@ -79,22 +79,24 @@ $border-radius: 1vw;
   flex-wrap: nowrap;
 }
 
-.segment {
-  &:not(.active) {
-    background-color: red;
-  }
+$outer-border: .2vw solid black;
 
+.segment {
   flex-grow: 1;
+
+  border-bottom: $outer-border;
 
   &:not(:last-child) {
     border-right: 0.1vw solid rgba(0, 0, 0, 0.404);
   }
 
   &:first-child {
+    border-left: $outer-border;
     border-bottom-left-radius: $border-radius;
   }
 
   &:last-child {
+    border-right: $outer-border;
     border-bottom-right-radius: $border-radius;
   }
 
