@@ -6,7 +6,7 @@ import { SettingsState, GameSettings, GameMode } from './types';
 export default class Settings extends VuexModule implements SettingsState {
 
 
-  version = "1.2.0";
+  version = "1.2.1";
   isShowingSettings = false;
   isShowingAbout = false;
   isShowingSeedDialog = false;
